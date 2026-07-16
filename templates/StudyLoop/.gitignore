@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Flask database
+*.db
+
+# Environment variables
+.env
+
+# macOS
+.DS_Store
+
+# VS Code settings
+.vscode/
+
+# Pytest
+.pytest_cache/
+
+# Logs
+*.log

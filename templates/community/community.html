@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Community
+{% endblock %}
+
+{% block main %}
+
+    <!-- Community Header -->
+    <section class="community-header">
+        <h1>CS50x</h1>
+        <p>
+            A community for students taking Harvard's CS50x course.
+        </p>
+        <div class="community-info">
+            <span>👥 1,245 Members</span>
+            <span>📚 Programming</span>
+        </div>
+    </section>
+
+    <!-- Community Actions -->
+    <section class="community-actions">
+        <a href="{{ url_for('create_post') }}" class="btn btn-primary">
+            Create Post
+        </a>
+    </section>
+
+
+    <!-- Posts -->
+    <section class="posts">
+        <h2>Recent Posts</h2>
+
+        <!-- TODO: Loop through posts -->
+        <article class="post-card">
+            <h3>Week 3 PSET Help</h3>
+            <p>
+                I'm having trouble understanding recursion.
+                Can someone explain it?
+            </p>
+            <small>
+                Posted by Ahmed • 2 hours ago
+            </small>
+        </article>
+
+
+        <article class="post-card">
+            <h3>Lecture Notes</h3>
+            <p>
+                Here are my notes from Lecture 4 if anyone needs them.
+            </p>
+
+            <small>
+                Posted by Sarah • Yesterday
+            </small>
+
+        </article>
+
+        <article class="post-card">
+            <h3>Study Group</h3>
+            <p>
+                Anyone interested in a weekly Discord study group?
+            </p>
+            <small>
+                Posted by Omar • 3 days ago
+            </small>
+        </article>
+    </section>
+
+    <!-- Members -->
+    <section class="members">
+        <h2>Community Members</h2>
+        <p>
+            1,245 students are part of this community.
+        </p>
+    </section>
+{% endblock %}

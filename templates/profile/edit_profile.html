@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit Profile
+{% endblock %}
+
+{% block main %}
+<section class="edit-profile">
+    <div class="profile-card">
+        <h1>Edit Profile</h1>
+        <p class="text-muted">
+            Update your account information.
+        </p>
+        <form action="{{ url_for('edit_profile') }}" method="post">
+            <div class="mb-3">
+                <label for="fullname" class="form-label">
+                    Full Name
+                </label>
+                <input
+                    id="fullname"
+                    name="fullname"
+                    type="text"
+                    class="form-control"
+                    value="John Doe"
+                    maxlength="50"
+                    autocomplete="name"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label for="username" class="form-label">
+                    Username
+                </label>
+                <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    class="form-control"
+                    value="johndoe"
+                    maxlength="30"
+                    autocomplete="username"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">
+                    Email
+                </label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="form-control"
+                    value="john@example.com"
+                    maxlength="100"
+                    autocomplete="email"
+                    required>
+            </div>
+
+            <hr>
+
+            <h4>Change Password (Optional)</h4>
+            <div class="mb-3">
+                <label for="current-password" class="form-label">
+                    Current Password
+                </label>
+                <input
+                    id="current-password"
+                    name="current_password"
+                    type="password"
+                    class="form-control"
+                    autocomplete="current-password">
+            </div>
+
+            <div class="mb-3">
+                <label for="new-password" class="form-label">
+                    New Password
+                </label>
+                <input
+                    id="new-password"
+                    name="new_password"
+                    type="password"
+                    class="form-control"
+                    minlength="8"
+                    autocomplete="new-password">
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmation" class="form-label">
+                    Confirm New Password
+                </label>
+                <input
+                    id="confirmation"
+                    name="confirmation"
+                    type="password"
+                    class="form-control"
+                    minlength="8"
+                    autocomplete="new-password">
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a
+                    href="{{ url_for('profile') }}"
+                    class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+                <button
+                    class="btn btn-primary"
+                    type="submit">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

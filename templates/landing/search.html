@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block main %}
+    <section class="search-hero">
+        <h1>Find Your Course Community</h1>
+        <p>
+            Search for a course and connect with students learning the same subject.
+        </p>
+    </section>
+
+    <section class="search-form">
+        <form action="{{ url_for('search') }}" method="post">
+            <div class="input-group">
+                <input
+                    class="form-control"
+                    name="course"
+                    type="text"
+                    placeholder="Search courses..."
+                    autocomplete="off"
+                    required>
+                <button
+                    class="btn btn-primary"
+                    type="submit">
+                    Search
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="popular-searches">
+        <h2>Popular Searches</h2>
+        <div class="popular-tags">
+            <span class="badge bg-primary">CS50x</span>
+            <span class="badge bg-primary">Python</span>
+            <span class="badge bg-primary">Java</span>
+            <span class="badge bg-primary">Web Development</span>
+            <span class="badge bg-primary">Algorithms</span>
+        </div>
+    </section>
+    <section class="request-community">
+        <h2>Can't find your course?</h2>
+        <p>
+            Request a new community and we'll create it if there's enough interest.
+        </p>
+        <a
+            href="{{ url_for('request_community') }}"
+            class="btn btn-outline-primary">
+            Request Community
+        </a>
+    </section>
+{% endblock %}

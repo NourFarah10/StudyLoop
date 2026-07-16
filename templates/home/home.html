@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+    <!-- Welcome -->
+    <section class="dashboard-hero">
+        <h1>Welcome Back!</h1>
+        <p>
+            Continue learning with your communities.
+        </p>
+        <a href="{{ url_for('search') }}" class="btn btn-primary">
+            Search Courses
+        </a>
+    </section>
+
+
+    <!-- My Communities -->
+    <section class="my-communities">
+        <h2>My Communities</h2>
+        <!-- TODO: Replace with Jinja loop -->
+        <div class="community-grid">
+            <div class="community-card">
+                <h3>CS50x</h3>
+                <p>1200 members</p>
+                <a href="#" class="btn btn-outline-primary">
+                    Open
+                </a>
+            </div>
+
+            <div class="community-card">
+                <h3>Python</h3>
+                <p>980 members</p>
+                <a href="#" class="btn btn-outline-primary">
+                    Open
+                </a>
+            </div>
+
+            <div class="community-card">
+                <h3>Web Development</h3>
+                <p>750 members</p>
+                <a href="#" class="btn btn-outline-primary">
+                    Open
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <section class="recent-activity">
+        <h2>Recent Activity</h2>
+        <div class="activity-card">
+            <p>No recent activity yet.</p>
+        </div>
+    </section>
+
+
+    <!-- Recommended Communities -->
+    <section class="recommended">
+        <h2>Recommended Communities</h2>
+        <div class="community-grid">
+            <div class="community-card">
+                <h3>Machine Learning</h3>
+                <p>540 members</p>
+                <a href="#" class="btn btn-primary">
+                    Join
+                </a>
+            </div>
+
+            <div class="community-card">
+                <h3>Algorithms</h3>
+                <p>620 members</p>
+                <a href="#" class="btn btn-primary">
+                    Join
+                </a>
+            </div>
+
+            <div class="community-card">
+                <h3>Database Systems</h3>
+                <p>430 members</p>
+                <a href="#" class="btn btn-primary">
+                    Join
+                </a>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Landing Page
+{% endblock %}
+
+{% block main %}
+    <!-- hero section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Find your course community</h1>
+            <p>
+                Connect with learners taking the same course..
+                Ask questions, share resources, and learn together.
+            </p>
+            <a href="{{ url_for('search') }}" class="btn btn-primary">
+                Search Courses
+            </a>
+            <a href="{{ url_for('signup') }}" class="btn btn-outline-primary">
+                Get Started
+            </a>
+        </div>
+    </section>
+    <section class="popular-communities">
+        <h2>Explore Popular Communities</h2>
+        <!-- {% for community in communities %}
+            TODO cards
+        {% endfor %} -->
+    </section>
+
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step-card">
+                <!-- icon -->
+                <h3>Search</h3>
+                <p>Find your course</p>
+            </div>
+            <div class="step-card">
+                <!-- icon -->
+                <h3>Join</h3>
+                <p>Become part of the community</p>
+            </div>
+            <div class="step-card">
+                <!-- icon -->
+                <h3>Learn</h3>
+                <p>Ask questions and share resources</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to start learning together?</h2>
+        <a href="{{ url_for('signup') }}" class="btn btn-primary">
+            Create Free Account
+        </a>
+    </section>
+{% endblock %}
