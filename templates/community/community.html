@@ -298,8 +298,7 @@
 
                 <div class="comment-input-wrapper">
 
-                    {% if current_user["profile_image"] %}
-                    <img
+                    {% if current_user["profile_image"] and current_user["profile_image"] != "default-profile.jpg" %}                    <img
                         src="{{ url_for('static', filename='uploads/' ~ current_user['profile_image']) }}"
                         class="comment-avatar">
                     {% else %}
