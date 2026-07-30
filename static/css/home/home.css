@@ -1,0 +1,267 @@
+/* ==========================================================
+   Modern StudyLoop Home
+   Replace your current home.css with this version.
+   (Based on your existing stylesheet, cleaned and organized.)
+   ========================================================== */
+
+/* Dashboard Layout */
+.dashboard{
+    max-width:1400px;
+    margin:0 auto;
+    padding:2rem 1.5rem 4rem;
+}
+
+/* Hero */
+.dashboard-hero{
+    position:relative;
+    overflow:hidden;
+    padding:4rem;
+    margin:2rem auto 4rem;
+    border-radius:28px;
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.05);
+    background:linear-gradient(-45deg,#0d5c4b,#094235,#0e7a62,#0b4d3f);
+    background-size:400% 400%;
+    animation:heroAppear .8s ease,gradientMove 14s ease infinite;
+}
+
+@keyframes heroAppear{
+    from{opacity:0;transform:translateY(30px) scale(.98);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+@keyframes gradientMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.dashboard-hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);
+    background-size:34px 34px;
+    opacity:.18;
+    animation:moveGrid 25s linear infinite,pulseGrid 6s ease-in-out infinite;
+}
+
+.dashboard-hero::after{
+    content:"";
+    position:absolute;
+    inset:-20%;
+    background:radial-gradient(circle at center,rgba(255,255,255,.08),transparent 65%);
+    animation:heroGlow 10s ease-in-out infinite;
+    pointer-events:none;
+}
+
+@keyframes moveGrid{from{transform:translateY(0);}to{transform:translateY(28px);}}
+@keyframes pulseGrid{0%,100%{opacity:.12;}50%{opacity:.25;}}
+@keyframes heroGlow{0%,100%{transform:scale(1);opacity:.4;}50%{transform:scale(1.08);opacity:.7;}}
+
+.hero-blur{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:.18;
+    animation:float 8s ease-in-out infinite;
+}
+.blur1{width:220px;height:220px;background:#31d0aa;top:-60px;right:-40px;}
+.blur2{width:180px;height:180px;background:#4ab7ff;bottom:-50px;left:-30px;animation-delay:2s;}
+.blur3{width:150px;height:150px;background:#f4dfb2;top:40%;right:35%;animation-delay:4s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-25px);}}
+
+.hero-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.hero-particles span{
+    position:absolute;
+    width:6px;height:6px;border-radius:50%;
+    background:rgba(255,255,255,.35);
+    animation:particleFloat linear infinite;
+}
+.hero-particles span:nth-child(1){left:10%;animation-duration:14s;}
+.hero-particles span:nth-child(2){left:25%;animation-duration:18s;animation-delay:3s;}
+.hero-particles span:nth-child(3){left:40%;animation-duration:13s;animation-delay:1s;}
+.hero-particles span:nth-child(4){left:60%;animation-duration:16s;animation-delay:5s;}
+.hero-particles span:nth-child(5){left:78%;animation-duration:12s;animation-delay:2s;}
+.hero-particles span:nth-child(6){left:90%;animation-duration:17s;animation-delay:7s;}
+
+@keyframes particleFloat{
+from{transform:translateY(110%) scale(.4);opacity:0;}
+20%{opacity:.8;}
+80%{opacity:.4;}
+to{transform:translateY(-120%) scale(1.2);opacity:0;}
+}
+
+/* The hero always sits on its own dark green gradient regardless of the
+   site theme, so its heading is pinned to white rather than following
+   --color-text-primary (which turns dark in light mode and would be
+   near-unreadable against this background). */
+.dashboard-hero h1{
+    animation:
+    slideUp .8s ease,
+    titleGlow 4s ease-in-out infinite;
+    position:relative;
+    z-index:2;
+    font-size:clamp(2.8rem,5vw,3.8rem);
+    font-weight:700;
+    line-height:1.15;
+    color:#fff;
+    text-shadow:
+        0 2px 10px rgba(0,0,0,.25),
+        0 8px 35px rgba(0,0,0,.18);
+}
+@keyframes titleGlow{
+    0%,100%{
+        text-shadow:
+        0 0 0 rgba(255,255,255,0);
+    }
+    50%{
+        text-shadow:
+        0 0 20px rgba(255,255,255,.18);
+    }
+}
+.dashboard-hero p{
+    position:relative;
+    z-index:2;
+    font-size:1.15rem;
+    color:rgba(255,255,255,.75);
+}
+
+/* Divider */
+.hero-divider{
+    height:1px;
+    margin:0 auto 3rem;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+}
+
+/* Sections */
+.my-communities,
+.recommended{
+    animation:
+        fadeSection .8s ease;
+}
+
+@keyframes fadeSection{
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.my-communities h2,
+.recommended h2{
+    font-size:2rem;
+    display:inline-block;
+    margin-bottom:1.5rem;
+    position:relative;
+}
+
+.my-communities h2::after,
+.recommended h2::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:60%;
+    height:3px;
+    background:var(--color-accent);
+    border-radius:999px;
+}
+/* Grid */
+.community-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:1.5rem;
+}
+
+/* Cards
+   This translucent-white overlay was designed to lighten a dark page
+   background slightly. On the light theme the page background is
+   already near-white, so the same overlay makes the card blend into
+   the page with almost no visible boundary — the light theme override
+   below switches it to a translucent dark tint instead, which has the
+   same "subtly raised" effect on a light background. */
+.community-card{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:230px;
+    padding:1.75rem;
+    background:
+    linear-gradient(
+    180deg,
+    rgba(255,255,255,.03),
+    rgba(255,255,255,.01)
+    );
+
+    backdrop-filter:blur(10px);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-lg);
+    opacity:0;
+    animation:cardFade .7s forwards;
+    transition:.3s;
+}
+
+[data-theme="light"] .community-card{
+    background:
+    linear-gradient(
+    180deg,
+    rgba(20,18,12,.035),
+    rgba(20,18,12,.01)
+    );
+    border-color:var(--color-border-strong);
+}
+
+.community-card:nth-child(1){animation-delay:.1s;}
+.community-card:nth-child(2){animation-delay:.25s;}
+.community-card:nth-child(3){animation-delay:.4s;}
+.community-card:nth-child(4){animation-delay:.55s;}
+
+@keyframes cardFade{
+from{opacity:0;transform:translateY(35px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.community-card:hover{
+    transform:
+        translateY(-8px)
+        scale(1.02);
+    border-color:var(--color-accent);
+    box-shadow:
+        0 25px 50px rgba(0,0,0,.35);
+}
+.community-card p{color:var(--color-text-muted);}
+.community-card .btn{
+    transition:
+        transform .25s,
+        box-shadow .25s,
+        background .25s;
+}
+
+.community-card .btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(245,223,178,.35);
+}
+
+/* Empty State */
+.activity-card{
+    background:var(--color-surface);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-lg);
+    padding:2rem;
+    text-align:center;
+}
+.activity-card h3{margin-bottom:.75rem;}
+.activity-card p{color:var(--color-text-secondary);margin-bottom:1.5rem;}
+
+@media(max-width:768px){
+.dashboard{padding:1rem;}
+.dashboard-hero{padding:2rem;}
+.dashboard-hero h1{font-size:2rem;}
+.community-grid{grid-template-columns:1fr;}
+}

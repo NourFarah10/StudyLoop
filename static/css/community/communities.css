@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Communities (Explore) Page
+   Note: .community-card here has a different internal structure than the
+   one used on landing/home (cover image + separate body), so every rule
+   is scoped under .communities-list to avoid colliding with those pages.
+========================================================================== */
+
+.communities-header{
+    padding-block:var(--space-10) var(--space-6);
+    animation:fadeDown .8s ease;
+}
+
+@keyframes fadeDown{
+    from{
+        opacity:0;
+        transform:translateY(-25px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+.communities-subtitle{
+    color:var(--color-text-secondary);
+    font-size:1.08rem;
+    line-height:1.7;
+    max-width:550px;
+    margin:1.25rem auto 0;
+    animation: fadeUp .8s ease .15s both;
+}
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+.communities-header h1 {
+  font-size: var(--fs-h2);
+  margin-bottom: var(--space-3);
+}
+.communities-header p {
+  font-size: 1.05rem;
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.communities-list {
+  padding-bottom: var(--space-10);
+}
+
+/* Card shell: full-bleed cover on top, padded body below */
+.communities-list .community-card{
+    display:flex;
+    flex-direction:column;
+    padding:0;
+    overflow:hidden;
+    background:var(--color-surface);
+    border:1px solid var(--color-border);
+    border-radius:var(--radius-md);
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+    opacity:0;
+    animation:cardFade .7s forwards;
+}
+.communities-list .community-card:nth-child(1){
+    animation-delay:.1s;
+}
+
+.communities-list .community-card:nth-child(2){
+    animation-delay:.2s;
+}
+
+.communities-list .community-card:nth-child(3){
+    animation-delay:.3s;
+}
+
+.communities-list .community-card:nth-child(4){
+    animation-delay:.4s;
+}
+
+.communities-list .community-card:nth-child(5){
+    animation-delay:.5s;
+}
+
+.communities-list .community-card:nth-child(6){
+    animation-delay:.6s;
+}
+
+@keyframes cardFade{
+    from{
+        opacity:0;
+        transform:translateY(35px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+.communities-list .community-card:hover{
+    transform:
+        translateY(-8px)
+        scale(1.02);
+    border-color:var(--color-accent);
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.28);
+}
+
+.communities-list .community-card-cover {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+}
+
+.communities-list .community-card .btn{
+    transition:
+        transform .25s,
+        box-shadow .25s;
+}
+
+.communities-list .community-card .btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(245,223,178,.25);
+}
+.communities-header h1::after{
+    content:"";
+    display:block;
+    width:80px;
+    height:4px;
+    margin:.8rem auto 0;
+    background:var(--color-accent);
+    border-radius:999px;
+}
+.communities-list .community-card-cover{
+    transition:transform .4s ease;
+}
+.communities-list .community-card:hover
+.community-card-cover{
+    transform:scale(1.05);
+}
+.communities-list .community-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--space-5);
+}
+.communities-list .community-card-body h3 {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-2);
+}
+.communities-list .community-card-body p {
+  font-size: var(--fs-small);
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+.communities-list .community-card-body .btn {
+  margin-top: var(--space-4);
+  align-self: flex-start;
+}
+
+/* Category badge — override Bootstrap's default gray.
+   Uses --color-accent-contrast (not --color-accent) for the text, since
+   pale cream text on a near-white pill background was unreadable in
+   light mode. */
+.communities-list .badge.bg-secondary {
+  background: var(--color-accent-soft) !important;
+  color: var(--color-accent-contrast) !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+}
+
+/* Empty state */
+.communities-list .text-center.mt-5 {
+  padding: var(--space-10) var(--space-6);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+.communities-list .text-center.mt-5 h3 {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-2);
+}
+.communities-list .text-center.mt-5 p {
+  margin-bottom: var(--space-5);
+}

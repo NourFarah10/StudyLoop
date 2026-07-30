@@ -1,0 +1,47 @@
+/* ==========================================================================
+   404 Page
+   Written to be reusable by 500.html if that page shares the same
+   .error-page / .error-card / .error-image structure.
+========================================================================== */
+
+.error-page {
+  min-height: calc(100vh - 96px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-5);
+  text-align: center;
+}
+
+.error-card {
+  max-width: 480px;
+}
+
+.error-image {
+  max-width: 220px;
+  margin-inline: auto;
+  opacity: 0.9;
+}
+
+.error-card .display-1 {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1;
+  margin-bottom: var(--space-2);
+}
+
+.error-card h2 {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-4);
+}
+
+.error-card p {
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+}
+
+.error-card .btn-outline-primary {
+  border-color: var(--color-border-strong);
+}

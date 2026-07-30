@@ -1,0 +1,26 @@
+@import url("global/variables.css");
+@import url("global/utilities.css");
+@import url("global/layout.css");
+@import url("global/animations.css");
+
+@import url("landing/landing.css");
+@import url("search/community_search.css");
+
+@import url("auth/login.css");
+@import url("auth/signup.css");
+@import url("auth/forget_password.css");
+
+@import url("community/communities.css");
+@import url("community/community.css");
+@import url("community/create_community.css");
+@import url("community/create_post.css");
+
+@import url("profile/profile.css");
+@import url("profile/edit_profile.css");
+
+@import url("settings/settings.css");
+
+@import url("home/home.css");
+
+@import url("errors/404.css");
+@import url("errors/500.css");

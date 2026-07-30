@@ -1,0 +1,241 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Create Community
+{% endblock %}
+
+{% block main %}
+
+<section class="create-community-page">
+
+    <!-- Background Blobs -->
+    <div class="create-blob blob1"></div>
+    <div class="create-blob blob2"></div>
+
+    <div class="container">
+
+        <div class="create-community-card">
+
+            <!-- Header -->
+            <div class="create-header">
+
+                <h1>Create a Community</h1>
+
+                <p class="create-subtitle">
+                    Build a place where students can ask questions,
+                    share resources, collaborate, and learn together.
+                </p>
+
+            </div>
+
+            <!-- Form -->
+            <form
+                action="{{ url_for('community.create_community') }}"
+                method="post"
+                enctype="multipart/form-data">
+
+                <!-- ===========================
+                     Community Name
+                ============================ -->
+
+                <div class="form-group">
+
+                    <label
+                        for="community_name"
+                        class="form-label">
+
+                        Community Name
+
+                    </label>
+
+                    <input
+                        autofocus
+                        class="form-control"
+                        id="community_name"
+                        name="community_name"
+                        type="text"
+                        maxlength="100"
+                        autocomplete="off"
+                        placeholder="e.g. CS50x, Algorithms, Calculus I"
+                        required>
+
+                </div>
+
+                <!-- ===========================
+                     Description
+                ============================ -->
+
+                <div class="form-group">
+
+                    <div class="label-row">
+
+                        <label
+                            for="description"
+                            class="form-label">
+
+                            Description
+
+                        </label>
+
+                        <span id="description-counter">
+                            0 / 1000
+                        </span>
+
+                    </div>
+
+                    <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        rows="6"
+                        maxlength="1000"
+                        autocomplete="off"
+                        placeholder="Describe what your community is about..."
+                        required></textarea>
+
+                </div>
+
+                <!-- ===========================
+                     Category
+                ============================ -->
+
+                <div class="form-group">
+
+                    <label
+                        for="category"
+                        class="form-label">
+
+                        Category
+
+                    </label>
+
+                    <select
+                        class="form-select"
+                        id="category"
+                        name="category"
+                        required>
+
+                        <option value="" selected disabled>
+                            Select a category
+                        </option>
+
+                        <option value="Programming">
+                            💻 Programming
+                        </option>
+
+                        <option value="Mathematics">
+                            📐 Mathematics
+                        </option>
+
+                        <option value="Science">
+                            🧪 Science
+                        </option>
+
+                        <option value="Design">
+                            🎨 Design
+                        </option>
+
+                        <option value="Business">
+                            💼 Business
+                        </option>
+
+                        <option value="Languages">
+                            🌍 Languages
+                        </option>
+
+                        <option value="Other">
+                            📚 Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- ===========================
+                     Cover Image
+                ============================ -->
+
+                <div class="form-group">
+
+                    <label
+                        for="cover_image"
+                        class="form-label">
+
+                        Cover Image
+
+                    </label>
+
+                    <div class="upload-box">
+
+                        <input
+                            type="file"
+                            id="cover_image"
+                            name="cover_image"
+                            class="form-control"
+                            accept=".jpg,.jpeg,.png,.webp">
+
+                        <p class="upload-text">
+
+                            📷
+                            <br><br>
+
+                            Upload a cover image
+                            <br>
+
+                            <small>
+                                JPG, PNG or WebP (Max 5MB)
+                            </small>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- ===========================
+                     Buttons
+                ============================ -->
+
+                <div class="button-group">
+
+                    <a
+                        href="{{ url_for('community.communities') }}"
+                        class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+
+                    <button
+                        class="btn btn-primary"
+                        type="submit">
+
+                        Create Community
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+const description = document.getElementById("description");
+const counter = document.getElementById("description-counter");
+
+description.addEventListener("input", function(){
+
+    counter.textContent =
+        `${this.value.length} / 1000`;
+
+});
+
+</script>
+
+{% endblock %}

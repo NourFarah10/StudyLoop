@@ -6,86 +6,204 @@
 
 {% block main %}
 
-    <!-- Welcome -->
+<div class="dashboard">
+
+    <!-- ==========================================
+         HERO
+    =========================================== -->
+
     <section class="dashboard-hero">
-        <h1>Welcome Back!</h1>
+
+        <!-- Animated Background -->
+        <div class="hero-blur blur1"></div>
+        <div class="hero-blur blur2"></div>
+        <div class="hero-blur blur3"></div>
+
+        <!-- Floating Particles -->
+        <div class="hero-particles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <h1 id="greeting">
+            {{ greeting }}, {{ user["username"] }}!
+        </h1>
+
         <p>
-            Continue learning with your communities.
+            Pick up where you left off, discover new communities,
+            and keep learning every day.
         </p>
-        <a href="{{ url_for('search') }}" class="btn btn-primary">
-            Search Courses
-        </a>
+
     </section>
 
+    <div class="hero-divider"></div>
 
-    <!-- My Communities -->
+    <!-- ==========================================
+         MY COMMUNITIES
+    =========================================== -->
+
     <section class="my-communities">
-        <h2>My Communities</h2>
-        <!-- TODO: Replace with Jinja loop -->
-        <div class="community-grid">
-            <div class="community-card">
-                <h3>CS50x</h3>
-                <p>1200 members</p>
-                <a href="#" class="btn btn-outline-primary">
-                    Open
-                </a>
-            </div>
 
-            <div class="community-card">
-                <h3>Python</h3>
-                <p>980 members</p>
-                <a href="#" class="btn btn-outline-primary">
-                    Open
-                </a>
-            </div>
-
-            <div class="community-card">
-                <h3>Web Development</h3>
-                <p>750 members</p>
-                <a href="#" class="btn btn-outline-primary">
-                    Open
-                </a>
-            </div>
+        <div class="section-header">
+            <h2>My Communities</h2>
         </div>
+
+        {% if joined_communities %}
+
+            <div class="community-grid">
+
+                {% for community in joined_communities %}
+
+                    <div class="community-card">
+
+                        <div>
+
+                            <h3>{{ community["name"] }}</h3>
+
+                            <p>
+                                {{ community["member_count"] }} Members
+                            </p>
+
+                        </div>
+
+                        <a
+                            href="{{ url_for('community.community', community_id=community['id']) }}"
+                            class="btn btn-outline-primary">
+                            Open Community
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="activity-card">
+
+                <h3>No communities yet 👋</h3>
+
+                <p>
+                    Start by joining a community that matches one of your
+                    courses and begin learning together.
+                </p>
+
+                <a
+                    href="{{ url_for('community.search_community') }}"
+                    class="btn btn-primary">
+                    Find Communities
+                </a>
+
+            </div>
+
+        {% endif %}
+
     </section>
 
-    <!-- Recent Activity -->
-    <section class="recent-activity">
-        <h2>Recent Activity</h2>
-        <div class="activity-card">
-            <p>No recent activity yet.</p>
-        </div>
-    </section>
+    <!-- ==========================================
+         RECOMMENDED COMMUNITIES
+    =========================================== -->
 
-
-    <!-- Recommended Communities -->
     <section class="recommended">
-        <h2>Recommended Communities</h2>
-        <div class="community-grid">
-            <div class="community-card">
-                <h3>Machine Learning</h3>
-                <p>540 members</p>
-                <a href="#" class="btn btn-primary">
-                    Join
-                </a>
-            </div>
 
-            <div class="community-card">
-                <h3>Algorithms</h3>
-                <p>620 members</p>
-                <a href="#" class="btn btn-primary">
-                    Join
-                </a>
-            </div>
-
-            <div class="community-card">
-                <h3>Database Systems</h3>
-                <p>430 members</p>
-                <a href="#" class="btn btn-primary">
-                    Join
-                </a>
-            </div>
+        <div class="section-header">
+            <h2>Recommended Communities</h2>
         </div>
+
+        {% if recommended_communities %}
+
+            <div class="community-grid">
+
+                {% for community in recommended_communities %}
+
+                    <div class="community-card">
+
+                        <div>
+
+                            <h3>{{ community["name"] }}</h3>
+
+                            <p>
+                                {{ community["member_count"] }} Members
+                            </p>
+
+                        </div>
+
+                        <a
+                            href="{{ url_for('community.join_community',
+                                community_id=community['id']) }}"
+                            class="btn btn-primary">
+                            Join Community
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="activity-card">
+
+                <h3>Nothing to recommend yet</h3>
+
+                <p>
+                    We'll recommend new communities as more become available.
+                </p>
+
+            </div>
+
+        {% endif %}
+
     </section>
 
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const hour = new Date().getHours();
+
+    let greeting = "";
+
+    if (hour < 12) {
+        greeting = "Good Morning";
+    } else if (hour < 18) {
+        greeting = "Good Afternoon";
+    } else {
+        greeting = "Good Evening";
+    }
+
+    document.getElementById("greeting").textContent =
+        `${greeting}, {{ user["username"] }}!`;
+
+});
+</script>
 {% endblock %}

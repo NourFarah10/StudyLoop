@@ -1,0 +1,168 @@
+/* ==========================================================================
+   Settings Page
+========================================================================== */
+
+.settings-page {
+  max-width: 640px;
+  margin-inline: auto;
+  padding-block: var(--space-10);
+}
+
+.settings-card {
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.settings-card h1 {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-2);
+}
+
+.settings-card > p.text-muted {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--fs-small);
+  margin-bottom: var(--space-6);
+}
+
+.settings-card h4 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.settings-card hr {
+  border-color: var(--color-border);
+  opacity: 1;
+  margin-block: var(--space-5);
+}
+
+.settings-card .form-label {
+  display: block;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+/* Theme switch (segmented control) */
+.theme-switch {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  gap: 4px;
+}
+
+.theme-option-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  user-select: none;
+}
+
+.theme-option i {
+  font-size: 1rem;
+}
+
+.theme-option:hover {
+  color: var(--color-text-primary);
+}
+
+.theme-option-input:checked + .theme-option {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.theme-option-input:focus-visible + .theme-option {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+/* Checkboxes */
+.settings-card .form-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.settings-card .form-check-input {
+  width: 2.4em;
+  height: 1.3em;
+  margin: 0;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  appearance: none;
+  position: relative;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+.settings-card .form-check-input::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.3em - 6px);
+  height: calc(1.3em - 6px);
+  border-radius: 50%;
+  background: var(--color-text-secondary);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+.settings-card .form-check-input:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.settings-card .form-check-input:checked::before {
+  background: var(--color-text-on-accent);
+  transform: translateX(calc(2.4em - 1.3em));
+}
+.settings-card .form-check-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+.settings-card .form-check-label {
+  font-size: var(--fs-body);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.settings-card .d-flex.justify-content-end {
+  margin-top: var(--space-2);
+}
+
+/* Danger zone */
+.settings-card.border.border-danger {
+  border-color: rgba(255, 107, 107, 0.35) !important;
+  background: rgba(255, 107, 107, 0.04);
+}
+.settings-card .text-danger {
+  color: #ff6b6b !important;
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3);
+}
+.settings-card .btn-outline-danger {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.4);
+}
+.settings-card .btn-outline-danger:hover {
+  background: rgba(255, 107, 107, 0.12);
+  color: #ff8a8a;
+  border-color: #ff6b6b;
+}

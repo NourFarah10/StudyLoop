@@ -1,0 +1,117 @@
+/* ==========================================================================
+   StudyLoop — Design Tokens
+   Change values here to re-theme the whole site.
+========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  /* Brand colors */
+  --color-night: #000000;
+  --color-night-800: #013f32;
+  --color-night-700: #1f1f1f;
+  --color-night-600: #2b2b2b;
+  --color-accent: #f6e9c7;
+  --color-accent-hover: #fbf2dc;
+  --color-accent-active: #e3d2a3;
+  --color-accent-soft: rgba(246, 233, 199, 0.1);
+  --color-accent-soft-strong: rgba(246, 233, 199, 0.2);
+  /* Use this instead of --color-accent whenever accent color is the TEXT
+     or BORDER (badges, outline buttons, icons) rather than a button fill —
+     cream text has ~1.1:1 contrast on a white background. */
+  --color-accent-contrast: var(--color-accent);
+
+  /* Text */
+  --color-text-primary: white;
+  --color-text-primary-black: #000000;
+  --color-text-secondary: #c7bfa8;
+  --color-text-muted: #8a8574;
+  --color-text-on-accent: #14120c;
+
+  /* Surfaces / borders */
+  --color-bg: var(--color-night);
+  --color-surface: var(--color-night-800);
+  --color-surface-raised: var(--color-night-700);
+  --color-border: rgba(246, 233, 199, 0.09);
+  --color-border-strong: rgba(246, 233, 199, 0.16);
+
+  /* Chrome elements that were previously hardcoded per-theme */
+  --color-navbar-bg: rgba(20, 20, 20, 0.72);
+  --color-hover-overlay: rgba(255, 255, 255, 0.06);
+
+  /* Typography */
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --fs-hero: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+  --fs-h2: clamp(1.75rem, 2.5vw + 1rem, 2.75rem);
+  --fs-h3: 1.25rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-10: 4rem;
+  --space-12: 6rem;
+
+  /* Radius / shadow / motion */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 0 1px rgba(246, 233, 199, 0.25),
+    0 0 24px rgba(246, 233, 199, 0.2),
+    0 0 60px rgba(246, 233, 199, 0.12);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.18s var(--ease-out);
+  --transition-base: 0.3s var(--ease-out);
+
+  --container-width: 1140px;
+}
+
+/* ==========================================================================
+   Light theme
+   Applied whenever <html data-theme="light">, set server-side from the
+   user's saved preference (see layout.html / settings.py).
+   Only color-related tokens are overridden — spacing, radius, fonts,
+   and motion stay identical across themes.
+========================================================================== */
+
+[data-theme="light"] {
+
+  --color-bg: #f7f3ea;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f1ede8;
+
+  --color-accent-soft: rgba(20, 18, 12, 0.05);
+  --color-accent-soft-strong: rgba(20, 18, 12, 0.1);
+  --color-accent-contrast: #7a5f1a;
+
+  --color-text-primary: #14120c;
+  --color-text-primary-black: #14120c;
+  --color-text-secondary: #4a4437;
+  --color-text-muted: #7a7361;
+  --color-text-on-accent: #14120c;
+
+  --color-border: rgba(20, 18, 12, 0.09);
+  --color-border-strong: rgba(20, 18, 12, 0.16);
+
+  --color-navbar-bg: rgba(255, 255, 255, 0.78);
+  --color-hover-overlay: rgba(0, 0, 0, 0.045);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 0 1px rgba(20, 18, 12, 0.1),
+    0 0 24px rgba(20, 18, 12, 0.08),
+    0 0 60px rgba(20, 18, 12, 0.05);
+}

@@ -5,21 +5,35 @@
 {% endblock %}
 
 {% block main %}
+
 <section class="error-page">
+
     <div class="error-card">
+
         <h1 class="display-1">404</h1>
+
         <h2>Page Not Found</h2>
+
         <p>
-            Sorry, the page you're looking for doesn't exist or may have been moved.
+            Sorry, we couldn't find the page you're looking for.
+            It may have been moved, deleted, or the URL might be incorrect.
         </p>
-        <div class="mt-4">
-            <a href="{{ url_for('home') }}" class="btn btn-primary">
+
+        <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+
+            <a
+                href="{{ url_for('home.home') }}"
+                class="btn btn-primary">
                 Go Home
             </a>
-            <a href="{{ url_for('search') }}" class="btn btn-outline-primary ms-2">
+
+            <a
+                href="{{ url_for('community.search_community') }}"
+                class="btn btn-outline-primary">
                 Search Communities
             </a>
         </div>
     </div>
 </section>
+
 {% endblock %}

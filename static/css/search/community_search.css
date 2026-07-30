@@ -1,0 +1,409 @@
+/* ==========================================================================
+   Community Search Page
+========================================================================== */
+
+.community-search-page {
+    min-height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem 1rem 3rem;
+}
+
+.search-container {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.search-container h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 1rem;
+}
+
+.search-container p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+}
+
+/* ==========================================================================
+   Search Box
+========================================================================== */
+
+.search-box {
+    position: relative;
+    width: 100%;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 20px 28px;
+
+    font-size: 1.15rem;
+
+    color: var(--color-text-primary);
+
+    background: var(--color-surface-raised);
+
+    border: 1px solid var(--color-border-strong);
+
+    border-radius: 999px;
+
+    outline: none;
+
+    transition: .25s;
+}
+
+/* Requested: in light mode, the search bar's border should be as dark as
+   the text inside it, rather than the very faint tinted border used
+   elsewhere — so it matches --color-text-primary directly. */
+[data-theme="light"] .search-box input {
+    border-color: var(--color-text-primary);
+}
+
+.search-box input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.search-box input:focus {
+    border-color: var(--color-accent);
+    background: var(--color-surface-raised);
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+}
+
+.search-button{
+    position:absolute;
+    left:20px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:var(--color-text-muted);
+    font-size:1.2rem;
+    cursor:pointer;
+    z-index:5;
+}
+
+.search-button:hover{
+    color:var(--color-text-primary);
+}
+
+#communitySearch{
+    padding-left:60px;
+}
+
+/* ==========================================================================
+   Search Dropdown
+========================================================================== */
+
+.search-dropdown {
+
+    position: absolute;
+
+    top: calc(100% + 12px);
+
+    left: 0;
+    right: 0;
+
+    display: none;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow-md);
+
+    z-index: 999;
+
+}
+
+/* ==========================================================================
+   Result Card
+========================================================================== */
+
+.search-result-card {
+
+    display: flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding: 20px 24px;
+    text-decoration: none;
+    transition: .25s;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.search-result-card:last-child {
+
+    border-bottom: none;
+
+}
+
+.search-result-card:hover {
+
+    background: var(--color-hover-overlay);
+
+}
+.search-result-info{
+
+    flex:1;
+
+}
+
+.search-actions{
+
+    flex-shrink:0;
+
+}
+
+.search-actions .btn{
+
+    min-width:150px;
+
+}
+
+/* The "Open" button (already-joined communities) uses Bootstrap's
+   default .btn-outline-light — white text/border, meant for a dark
+   background. Never themed, so it was invisible on the light card
+   here. Overridden to match the rest of the site's outline buttons. */
+.search-actions .btn-outline-light{
+
+    background:transparent;
+    color:var(--color-accent-contrast);
+    border:1px solid var(--color-accent-contrast);
+
+}
+
+.search-actions .btn-outline-light:hover{
+
+    background:var(--color-accent);
+    color:var(--color-text-primary-black);
+    border-color:var(--color-accent);
+
+}
+
+.search-actions .btn-primary{
+
+    background:#3DBE6C;
+    border:none;
+
+}
+
+.search-actions .btn-primary:hover{
+
+    background:#2ca357;
+
+}
+.search-title {
+
+    color: var(--color-text-primary);
+
+    font-size: 1.1rem;
+
+    font-weight: 700;
+
+    margin-bottom: 6px;
+
+}
+
+.search-meta {
+
+    display: flex;
+
+    gap: 10px;
+
+    color: var(--color-text-muted);
+
+    font-size: .9rem;
+
+    margin-bottom: 8px;
+
+}
+
+.search-description {
+
+    color: var(--color-text-secondary);
+
+    line-height: 1.5;
+
+    font-size: .95rem;
+
+}
+
+/* ==========================================================================
+   Empty Search Result
+========================================================================== */
+
+.search-empty{
+
+    padding:45px 30px;
+
+    text-align:center;
+
+}
+
+.empty-icon{
+
+    width:70px;
+    height:70px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:var(--color-hover-overlay);
+
+    margin-bottom:20px;
+
+}
+
+.empty-icon i{
+
+    font-size:2rem;
+
+    color:var(--color-accent-contrast);
+
+}
+
+.search-empty h3{
+
+    color:var(--color-text-primary);
+
+    margin-bottom:12px;
+
+}
+
+.search-empty p{
+
+    color:var(--color-text-secondary);
+
+    margin-bottom:8px;
+
+}
+
+.search-empty .small-text{
+
+    font-size:.9rem;
+
+    opacity:.75;
+
+}
+
+/* ==========================================================================
+   Create Community Section
+========================================================================== */
+
+.create-community-section {
+
+    text-align: center;
+
+    padding: 5rem 1rem;
+
+    max-width: 700px;
+
+    margin: auto;
+
+}
+
+.create-community-section h2 {
+
+    font-size: 2rem;
+
+    margin-bottom: 1rem;
+
+}
+
+.create-community-section p {
+
+    color: var(--color-text-secondary);
+
+    margin-bottom: 2rem;
+
+    font-size: 1.05rem;
+
+}
+
+/* ==========================================================================
+   Responsive
+========================================================================== */
+
+@media (max-width:768px){
+
+    .community-search-page{
+
+        min-height:auto;
+
+        padding-top:3rem;
+
+    }
+
+    .search-container h1{
+
+        font-size:2.3rem;
+
+    }
+
+    .search-box input{
+
+        transition:
+            border-color .25s,
+            box-shadow .25s,
+            transform .25s;
+
+    }
+
+    .search-box input:focus{
+
+        transform:translateY(-2px);
+
+    }
+
+    .search-result-card{
+
+        padding:16px;
+
+    }
+
+    .search-meta{
+
+        flex-wrap:wrap;
+
+    }
+
+}
+.search-box{
+
+    position:relative;
+
+}
+
+.search-icon{
+
+    position:absolute;
+
+    left:24px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:var(--color-text-muted);
+
+    font-size:1.2rem;
+
+}
+
+.search-box input{
+
+    padding-left:60px;
+
+}

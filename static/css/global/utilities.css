@@ -1,0 +1,81 @@
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--fs-body);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background var(--transition-fast), border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn:focus-visible { outline: 2px solid var(--color-accent-hover); outline-offset: 3px; }
+
+.btn-primary {
+    background: var(--color-accent);
+    color: var(--color-text-primary-black);
+    border: 1px solid transparent;
+    box-shadow: none;
+}
+
+.btn-primary:hover {
+    background: var(--color-accent-hover);
+    color: var(--color-text-primary-black);
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(246,233,199,.18);
+}
+
+.btn-primary:active {
+    background: var(--color-accent-active);
+}
+
+/* Uses --color-accent-contrast (not --color-accent) for the resting
+   text/border: --color-accent is pale cream, which is invisible on a
+   light background when used as text. --color-accent-contrast stays
+   cream on dark theme but becomes a readable dark gold on light theme. */
+.btn-outline-primary {
+    background: transparent;
+    color: var(--color-accent-contrast);
+    border: 1px solid var(--color-accent-contrast);
+}
+
+.btn-outline-primary:hover {
+    background: var(--color-accent);
+    color: var(--color-text-primary-black);
+    border-color: var(--color-accent);
+    box-shadow:
+        0 0 18px rgba(246,233,199,.15);
+}
+
+/* Text helpers (used across templates) */
+.text-muted { color: var(--color-text-muted); }
+.text-center { text-align: center; }
+.mt-3 { margin-top: var(--space-5); }
+
+/* Signature "highlighter" element */
+.text-highlight {
+  position: relative;
+  display: inline-block;
+  font-style: italic;
+}
+.text-highlight::after {
+  content: "";
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  bottom: 0.05em;
+  height: 0.32em;
+  background: var(--color-accent);
+  z-index: -1;
+  border-radius: 2px;
+  transform: rotate(-1deg);
+}

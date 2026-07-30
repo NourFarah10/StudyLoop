@@ -1,0 +1,228 @@
+/* Final create_community.css */
+.create-community-page{
+  position:relative;
+  overflow:hidden;
+  padding:4rem 1rem 5rem
+}
+.create-community-page .create-blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.16;
+  animation:floatBlob 10s ease-in-out infinite
+}
+.create-community-page .blob1{
+  width:260px;
+  height:260px;
+  background:#2ed6b0;
+  top:-80px;
+  right:-60px
+}
+.create-community-page .blob2{
+  width:220px;
+  height:220px;
+  background:#4aa8ff;
+  left:-70px;
+  bottom:0;
+  animation-delay:3s
+}
+@keyframes floatBlob{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-25px)}
+}
+.create-community-page .create-community-card{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  margin:auto;
+  padding:2.5rem;
+  border-radius:28px;
+  background:rgba(20,28,26,.92);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  box-shadow:0 25px 60px rgba(0,0,0,.35);
+  animation:cardIn .8s ease
+}
+@keyframes cardIn{
+  from{
+    opacity:0;
+    transform:translateY(30px) scale(.98)
+  }
+  to{
+    opacity:1;
+    transform:none
+  }
+}
+.create-community-page .create-header{
+  text-align:center;
+  margin-bottom:2rem
+}
+.create-community-page .create-header h1{
+  font-size:2.4rem;
+  margin-bottom:.75rem
+}
+.create-community-page .create-subtitle{
+    color:#d5cebd;
+    max-width:560px;
+    margin:auto;
+    line-height:1.8;
+    font-size:1.05rem;
+}
+.create-community-page .form-group{
+  margin-bottom:1.6rem
+}
+.create-community-page .label-row{
+  display:flex;
+  justify-content:space-between
+}
+.create-community-page .form-control,
+.create-community-page .form-select{
+  background:var(--color-surface-raised);
+  border:1px solid var(--color-border);
+  border-radius:14px;
+  padding:.85rem 1rem;
+  transition:.25s
+}
+.create-community-page .form-control:focus,
+.create-community-page .form-select:focus{
+  border-color:var(--color-accent);
+  box-shadow:0 0 0 4px rgba(46,214,176,.15)
+}
+.create-community-page textarea.form-control{
+  min-height:150px
+}
+.create-community-page .upload-box{
+  border:2px dashed rgba(255,255,255,.12);
+  border-radius:18px;
+  padding:1.25rem;
+  background:rgba(255,255,255,.02)
+}
+.create-community-page .upload-box:hover{
+  border-color:var(--color-accent);
+  background:rgba(46,214,176,.05)
+}
+.create-community-page .upload-text{
+  text-align:center;
+  color:var(--color-text-secondary);
+  margin-top:1rem
+}
+.create-community-page .button-group{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  margin-top:2rem
+}
+.create-community-page .button-group .btn{
+  border-radius:999px;
+  padding:.85rem;
+  font-weight:600
+}
+.create-community-page .button-group .btn:hover{
+  transform:translateY(-2px)
+}
+@media(max-width:768px){
+  .create-community-page .create-community-card{
+    padding:1.5rem
+  }
+  .create-community-page .button-group{
+    grid-template-columns:1fr
+  }
+}
+
+/* ==========================================================
+   Better Readability
+   (all rules below were previously completely unscoped — they matched
+   .form-control, input, textarea, select, etc. on ANY page that loaded
+   this stylesheet, not just this one. That's what was overriding text
+   color on Edit Profile's inputs. Every selector is now scoped to
+   .create-community-page.)
+========================================================== */
+
+/* Labels */
+.create-community-page .form-label{
+    color:#e9e3d3;
+    font-size:1rem;
+    font-weight:600;
+    letter-spacing:.3px;
+}
+
+/* Description counter */
+.create-community-page #description-counter{
+    color:#d9d2c0;
+    font-weight:600;
+}
+
+/* Input & textarea text */
+.create-community-page .form-control,
+.create-community-page .form-select{
+    color:#f8f5ef !important;
+    font-size:1rem;
+}
+
+/* Placeholder text */
+.create-community-page .form-control::placeholder,
+.create-community-page textarea::placeholder{
+    color:#a8b0a9 !important;
+    opacity:1;
+}
+
+/* Select placeholder + selected option */
+.create-community-page .form-select{
+    color:#f8f5ef !important;
+}
+
+.create-community-page .form-select option{
+    background:#242c28;
+    color:#f8f5ef;
+}
+
+/* Upload helper text */
+.create-community-page .upload-text{
+    color:#d3cdbf;
+    font-size:.95rem;
+}
+
+.create-community-page .upload-text small{
+    color:#aeb6ae;
+}
+
+/* File input */
+.create-community-page input[type="file"]{
+    color:#f8f5ef;
+}
+
+/* File button */
+.create-community-page input[type="file"]::file-selector-button{
+    background:#f4dfb2;
+    color:#1d2421;
+    border:none;
+    border-radius:10px;
+    padding:.6rem 1rem;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.create-community-page input[type="file"]::file-selector-button:hover{
+    background:#f7e7c4;
+}
+
+/* Make typed text clearly visible
+   (this was the worst offender: bare `input, textarea, select { color:
+   #fff }` with no scoping at all — every form field on every page that
+   loaded this file would get forced white text.) */
+.create-community-page input,
+.create-community-page textarea,
+.create-community-page select{
+    color:#ffffff;
+}
+
+/* Focus state */
+.create-community-page .form-control:focus,
+.create-community-page .form-select:focus{
+    color:#ffffff;
+}
+
+/* Optional: brighter upload border */
+.create-community-page .upload-box{
+    border-color:rgba(255,255,255,.18);
+}

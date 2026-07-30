@@ -1,81 +1,163 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Edit Profile
+Edit Profile
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/profile/edit_profile.css') }}">
 {% endblock %}
 
 {% block main %}
+
 <section class="edit-profile">
+
     <div class="profile-card">
+
         <h1>Edit Profile</h1>
+
         <p class="text-muted">
             Update your account information.
         </p>
-        <form action="{{ url_for('edit_profile') }}" method="post">
+
+        <form
+            action="{{ url_for('profile.edit_profile') }}"
+            method="POST"
+            enctype="multipart/form-data">
+
+            <!-- ================= PROFILE HEADER ================= -->
+
+            <div class="profile-header">
+
+                <label for="profile-image" class="profile-picture-wrapper">
+
+                    <img
+                        id="profile-preview"
+                        src="{% if user['profile_image'] %}
+                                {{ url_for('static', filename='uploads/' ~ user['profile_image']) }}
+                             {% else %}
+                                {{ url_for('static', filename='images/default-profile.jpg') }}
+                             {% endif %}"
+                        class="profile-picture">
+
+                    <div class="profile-picture-overlay">
+                        <i class="bi bi-pencil-fill"></i>
+                    </div>
+
+                </label>
+
+                <input
+                    type="file"
+                    id="profile-image"
+                    name="profile_image"
+                    accept="image/*"
+                    hidden>
+
+                <div class="profile-header-info">
+                    <h1>{{ user["username"] }}</h1>
+                </div>
+
+            </div>
+
+            <!-- ================= FULL NAME ================= -->
+
             <div class="mb-3">
-                <label for="fullname" class="form-label">
+
+                <label
+                    for="fullname"
+                    class="form-label">
                     Full Name
                 </label>
+
                 <input
                     id="fullname"
                     name="fullname"
                     type="text"
                     class="form-control"
-                    value="John Doe"
+                    value="{{ user['fullname'] }}"
                     maxlength="50"
-                    autocomplete="name"
-                    required>
+                    autocomplete="name">
+
             </div>
 
+            <!-- ================= USERNAME ================= -->
+
             <div class="mb-3">
-                <label for="username" class="form-label">
+
+                <label
+                    for="username"
+                    class="form-label">
                     Username
                 </label>
+
                 <input
                     id="username"
                     name="username"
                     type="text"
                     class="form-control"
-                    value="johndoe"
+                    value="{{ user['username'] }}"
                     maxlength="30"
-                    autocomplete="username"
-                    required>
+                    autocomplete="username">
+
             </div>
 
-            <div class="mb-3">
-                <label for="email" class="form-label">
+            <!-- ================= EMAIL ================= -->
+
+            <div class="mb-4">
+
+                <label
+                    for="email"
+                    class="form-label">
                     Email
                 </label>
+
                 <input
                     id="email"
                     name="email"
                     type="email"
                     class="form-control"
-                    value="john@example.com"
+                    value="{{ user['email'] }}"
                     maxlength="100"
-                    autocomplete="email"
-                    required>
+                    autocomplete="email">
+
             </div>
 
             <hr>
 
-            <h4>Change Password (Optional)</h4>
+            <!-- ================= PASSWORD ================= -->
+
+            <h4>Change Password</h4>
+
+            <p class="text-muted">
+                Leave these fields blank if you don't want to change your password.
+            </p>
+
             <div class="mb-3">
-                <label for="current-password" class="form-label">
+
+                <label
+                    for="current-password"
+                    class="form-label">
                     Current Password
                 </label>
+
                 <input
                     id="current-password"
                     name="current_password"
                     type="password"
                     class="form-control"
                     autocomplete="current-password">
+
             </div>
 
             <div class="mb-3">
-                <label for="new-password" class="form-label">
+
+                <label
+                    for="new-password"
+                    class="form-label">
                     New Password
                 </label>
+
                 <input
                     id="new-password"
                     name="new_password"
@@ -83,12 +165,17 @@
                     class="form-control"
                     minlength="8"
                     autocomplete="new-password">
+
             </div>
 
-            <div class="mb-3">
-                <label for="confirmation" class="form-label">
+            <div class="mb-4">
+
+                <label
+                    for="confirmation"
+                    class="form-label">
                     Confirm New Password
                 </label>
+
                 <input
                     id="confirmation"
                     name="confirmation"
@@ -96,21 +183,46 @@
                     class="form-control"
                     minlength="8"
                     autocomplete="new-password">
+
             </div>
 
-            <div class="d-flex justify-content-between mt-4">
+            <!-- ================= BUTTONS ================= -->
+
+            <div class="d-flex justify-content-between">
+
                 <a
-                    href="{{ url_for('profile') }}"
+                    href="{{ url_for('profile.profile') }}"
                     class="btn btn-outline-secondary">
                     Cancel
                 </a>
+
                 <button
                     class="btn btn-primary"
                     type="submit">
                     Save Changes
                 </button>
+
             </div>
+
         </form>
+
     </div>
+
 </section>
+
+<script>
+const imageInput = document.getElementById("profile-image");
+const preview = document.getElementById("profile-preview");
+
+imageInput.addEventListener("change", function () {
+
+    if (this.files && this.files[0]) {
+
+        preview.src = URL.createObjectURL(this.files[0]);
+
+    }
+
+});
+</script>
+
 {% endblock %}

@@ -1,76 +1,164 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Create Post
+Create Post
 {% endblock %}
 
 {% block main %}
 
-<section class="create-post">
+<section class="create-post-page">
+
     <div class="post-card">
-        <h1>Create a Post</h1>
-        <p>
-            Share a question, resource, or start a discussion with your community.
-        </p>
-        <form action="{{ url_for('create_post') }}" method="post">
+
+        <!-- Header -->
+
+        <div class="post-header">
+
+            {% if user and user['profile_image'] %}
+                <img
+                    src="{{ url_for('static', filename='uploads/' ~ user['profile_image']) }}"
+                    class="post-avatar">
+            {% else %}
+                <img
+                    src="{{ url_for('static', filename='images/default-profile.jpg') }}"
+                    class="post-avatar">
+            {% endif %}
+
+            <div>
+
+                <h4>{{ session["username"] if session.get("username") else "You" }}</h4>
+
+                <small>
+                    Posting in
+                    <strong>{{ community["name"] }}</strong>
+                </small>
+
+            </div>
+
+        </div>
+
+        <form
+            action="{{ url_for('post.create_post', community_id=community['id']) }}"
+            method="post"
+            enctype="multipart/form-data">
+
+            <!-- Title -->
+
             <div class="mb-3">
-                <label for="title" class="form-label">
-                    Title
-                </label>
+
                 <input
-                    class="form-control"
-                    id="title"
-                    name="title"
                     type="text"
-                    placeholder="Enter a title"
-                    maxlength="100"
-                    required>
+                    name="title"
+                    class="form-control post-title"
+                    placeholder="Optional title..."
+                    maxlength="100">
+
             </div>
 
-            <div class="mb-3">
-                <label for="content" class="form-label">
-                    Content
-                </label>
+            <!-- Content -->
+
+            <div class="mb-4">
+
                 <textarea
-                    class="form-control"
-                    id="content"
                     name="content"
+                    class="form-control post-content"
                     rows="8"
-                    placeholder="Write your post here..."
-                    maxlength="5000"
+                    placeholder="What's on your mind?"
                     required></textarea>
+
             </div>
 
-            <div class="mb-3">
-                <label for="tag" class="form-label">
+            <!-- Tag -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
                     Tag
+
                 </label>
+
                 <select
+                    name="tag"
                     class="form-select"
-                    id="tag"
-                    name="tag">
-                    <option value="">Select a tag</option>
-                    <option value="Question">Question</option>
-                    <option value="Discussion">Discussion</option>
-                    <option value="Resource">Resource</option>
-                    <option value="Notes">Notes</option>
-                    <option value="Project">Project</option>
+                    required>
+
+                    <option value="" selected disabled>
+
+                        Choose a tag
+
+                    </option>
+
+                    <option value="Question">
+                        ❓ Question
+                    </option>
+
+                    <option value="Discussion">
+                        💬 Discussion
+                    </option>
+
+                    <option value="Notes">
+                        📝 Notes
+                    </option>
+
+                    <option value="Resource">
+                        📚 Resource
+                    </option>
+
+                    <option value="Project">
+                        🚀 Project
+                    </option>
+
                 </select>
+
             </div>
 
-            <div class="d-flex justify-content-between">
+            <!-- Image -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+
+                    Attachment (Optional)
+
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    class="form-control"
+                    accept="image/*">
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div class="post-buttons">
+
                 <a
-                    href="{{ url_for('communities') }}"
+                    href="{{ url_for('community.community', community_id=community['id']) }}"
                     class="btn btn-outline-secondary">
+
                     Cancel
+
                 </a>
+
                 <button
                     class="btn btn-primary"
                     type="submit">
+
+                    <i class="bi bi-send-fill me-2"></i>
+
                     Publish Post
+
                 </button>
+
             </div>
+
         </form>
+
     </div>
+
 </section>
+
 {% endblock %}
