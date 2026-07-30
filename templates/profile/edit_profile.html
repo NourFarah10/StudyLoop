@@ -34,7 +34,7 @@ Edit Profile
 
                     <img
                         id="profile-preview"
-                        src="{% if user['profile_image'] %}
+                        src="{% if user['profile_image'] and user['profile_image'] != 'default-profile.jpg' %}
                                 {{ url_for('static', filename='uploads/' ~ user['profile_image']) }}
                              {% else %}
                                 {{ url_for('static', filename='images/default-profile.jpg') }}
