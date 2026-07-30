@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import sqlite3
 import secrets
+import os
 
 # Blueprints
 from routes.profile import profile_bp
@@ -17,7 +18,8 @@ from helpers import login_required, send_reset_email
 from database.db import get_db
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
-
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 
 # ==================================
@@ -29,11 +31,8 @@ app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USE_SSL"] = False
 
-# Your Gmail address
-app.config["MAIL_USERNAME"] = "nourelsayed2005farh@gmail.com"
-
-# Gmail App Password (NOT your Gmail password)
-app.config["MAIL_PASSWORD"] = "sdfqmlbgzmyipjvu"
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
 
 app.config["MAIL_DEFAULT_SENDER"] = (
     "StudyLoop",
@@ -49,7 +48,10 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-app.secret_key = secrets.token_hex(32)
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    secrets.token_hex(32)
+)
 mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.secret_key)
 
