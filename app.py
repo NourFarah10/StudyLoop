@@ -50,7 +50,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 app.secret_key = os.environ.get(
     "SECRET_KEY",
-app.secret_key = os.environ.get("SECRET_KEY")
+    secrets.token_hex(32)
 )
 mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.secret_key)
