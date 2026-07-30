@@ -97,26 +97,24 @@
                 <div class="dropdown ms-auto">
 
                     <img
-                        src="{% if current_user and current_user['profile_image'] %}
-                                {{ url_for('static', filename='uploads/' ~ current_user['profile_image']) }}
-                            {% else %}
-                                {{ url_for('static', filename='images/default-profile.jpg') }}
-                            {% endif %}"
+                        src="{{ url_for('static',
+                            filename='uploads/' ~ current_user['profile_image']
+                            if current_user and current_user['profile_image'] != 'default-profile.jpg'
+                            else 'images/default-profile.jpg') }}"
                         class="profile-avatar dropdown-toggle"
                         data-bs-toggle="dropdown"
-                        aria-expanded="false"
                         alt="Profile">
 
                     <ul class="dropdown-menu dropdown-menu-end">
 
                         <li class="dropdown-header-profile">
                             <img
-                                src="{% if current_user and current_user['profile_image'] %}
-                                        {{ url_for('static', filename='uploads/' ~ current_user['profile_image']) }}
-                                    {% else %}
-                                        {{ url_for('static', filename='images/default-profile.jpg') }}
-                                    {% endif %}"
-                                class="dropdown-avatar"
+                                src="{{ url_for('static',
+                                    filename='uploads/' ~ current_user['profile_image']
+                                    if current_user and current_user['profile_image'] != 'default-profile.jpg'
+                                    else 'images/default-profile.jpg') }}"
+                                class="profile-avatar dropdown-toggle"
+                                data-bs-toggle="dropdown"
                                 alt="Profile">
                             <span class="dropdown-username">{{ current_user['username'] }}</span>
                         </li>
