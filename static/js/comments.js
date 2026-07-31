@@ -31,7 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function profileImage(image) {
 
-        if (image)
+        // The `users.profile_image` column defaults to the literal string
+        // "default-profile.jpg" rather than NULL/empty, so this is always
+        // truthy even when the user never uploaded a picture — without
+        // this check it would incorrectly look for that file inside
+        // static/uploads/ instead of static/images/, where it actually
+        // lives.
+        if (image && image !== "default-profile.jpg")
             return `/static/uploads/${image}`;
 
         return "/static/images/default-profile.jpg";
