@@ -241,6 +241,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </button>
 
+                    <button
+                        type="button"
+                        class="reply-cancel-btn"
+                        data-comment="${comment.id}">
+
+                        Cancel
+
+                    </button>
+
                 </div>
 
                 <!-- Replies -->
@@ -631,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================
-    // ESC key cancels editing
+    // ESC key cancels editing / closes reply box
     // =========================================
     document.addEventListener("keydown", function(e){
 
@@ -641,14 +650,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const textarea =
             document.querySelector(".edit-comment-textarea");
 
-        if(!textarea)
-            return;
+        if(textarea){
 
-        const comment =
-            textarea.closest(".comment");
+            const comment =
+                textarea.closest(".comment");
 
-        comment.querySelector(".comment-content").textContent =
-            textarea.defaultValue;
+            comment.querySelector(".comment-content").textContent =
+                textarea.defaultValue;
+        }
+
+        const openReplyForm =
+            document.querySelector(".reply-form[style*='display: block']");
+
+        if(openReplyForm){
+
+            openReplyForm.querySelector(".reply-input").value = "";
+            openReplyForm.style.display = "none";
+        }
 
     });
 
@@ -676,6 +694,27 @@ document.addEventListener("DOMContentLoaded", () => {
         form.style.display="block";
 
         form.querySelector("input").focus();
+
+    });
+
+    // =========================================
+    // Cancel Reply
+    // =========================================
+
+    document.addEventListener("click", function(e){
+
+        const button = e.target.closest(".reply-cancel-btn");
+
+        if(!button)
+            return;
+
+        const form =
+            document.getElementById(
+                `reply-form-${button.dataset.comment}`
+            );
+
+        form.querySelector(".reply-input").value = "";
+        form.style.display = "none";
 
     });
 
