@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <button
                         type="button"
-                        class="reply-cancel-btn"
+                        class="comment-cancel-btn reply-cancel-btn"
                         data-comment="${comment.id}">
 
                         Cancel
@@ -514,6 +514,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (newText === "")
                 return;
 
+            console.log(button);
+            console.log(button.dataset);
+            console.log(button.dataset.comment);
             const response = await fetch(
                 `/api/comments/${button.dataset.comment}/edit`,
                 {
