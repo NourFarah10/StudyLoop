@@ -221,15 +221,24 @@ def edit_post(community_id, post_id):
             )
         )
 
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE id = ?
+    """, (session["user_id"],))
+
+    user = cursor.fetchone()
+
     if request.method == "GET":
 
         conn.close()
 
-        return render_template(
-            "community/edit_post.html",
-            post=post,
-            community_id=community_id
-        )
+    return render_template(
+        "community/edit_post.html",
+        post=post,
+        community_id=community_id,
+        user=user
+    )
 
     title = request.form.get("title", "").strip()
     content = request.form.get("content", "").strip()
