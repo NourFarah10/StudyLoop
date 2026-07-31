@@ -732,9 +732,9 @@ document.addEventListener("DOMContentLoaded", () => {
             `.comment[data-id="${parentCommentId}"]`
         );
 
-        const replies = comment.querySelector(".replies");
+        const repliesContainer = comment.querySelector(".replies");
 
-        replies.insertAdjacentHTML(
+        repliesContainer.insertAdjacentHTML(
 
             "beforeend",
 
@@ -742,9 +742,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
         );
 
+        // Make sure the newly added reply is actually visible right away —
+        // this container starts hidden and previously only got shown by
+        // clicking a "View replies" button, which didn't exist yet if this
+        // was the comment's first reply.
+        repliesContainer.style.display = "block";
+
+        const toggleWrapper = comment.querySelector(".reply-toggle-wrapper");
+
+        const replyCount =
+            repliesContainer.querySelectorAll(":scope > .comment").length;
+
+        let toggleBtn = toggleWrapper.querySelector(".view-replies-btn");
+
+        if (!toggleBtn) {
+
+            toggleWrapper.innerHTML = `
+                <button
+                    class="view-replies-btn"
+                    data-comment="${parentCommentId}">
+                    Hide replies
+                </button>
+            `;
+
+        } else if (toggleBtn.textContent.trim().startsWith("View")) {
+
+            toggleBtn.textContent =
+                `View ${replyCount} ${replyCount === 1 ? "reply" : "replies"}`;
+        }
+
         input.value="";
 
         form.style.display="none";
+
+        // Update the total comment count on the post
+        const postId = button.closest(".comments-section").dataset.post;
+        const commentsCountEl = document.getElementById(`comments-count-${postId}`);
+
+        if (commentsCountEl && typeof data.count !== "undefined")
+            commentsCountEl.textContent = `💬 ${data.count} Comments`;
 
     });
 
