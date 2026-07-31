@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     <button
                         class="comment-save-btn save-comment-btn"
-                        data-id="${button.dataset.comment}">
+                        data-comment="${button.dataset.comment}">
                         Save
                     </button>
 
