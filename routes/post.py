@@ -75,12 +75,11 @@ def create_post(community_id):
 
         conn.close()
 
-    return render_template(
-        "community/edit_post.html",
-        post=post,
-        community_id=community_id,
-        user=user
-    )
+        return render_template(
+            "community/create_post.html",
+            community_id=community_id,
+            user=user
+        )
 
     title = request.form.get("title", "").strip()
     content = request.form.get("content", "").strip()
@@ -233,12 +232,12 @@ def edit_post(community_id, post_id):
 
         conn.close()
 
-    return render_template(
-        "community/edit_post.html",
-        post=post,
-        community_id=community_id,
-        user=user
-    )
+        return render_template(
+            "community/edit_post.html",
+            post=post,
+            community_id=community_id,
+            user=user
+        )
 
     title = request.form.get("title", "").strip()
     content = request.form.get("content", "").strip()
