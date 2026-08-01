@@ -14,7 +14,7 @@ Create Post
 
         <div class="post-header">
 
-            {% if user and user['profile_image'] %}
+            {% if user and user['profile_image'] and user['profile_image'] != 'default-profile.jpg' %}
                 <img
                     src="{{ url_for('static', filename='uploads/' ~ user['profile_image']) }}"
                     class="post-avatar">
