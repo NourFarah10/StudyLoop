@@ -55,7 +55,7 @@
 
     {% endif %}
 
-    {% if community["owner_id"] == session["user_id"] %}
+    {% if community["created_by"] == session["user_id"] %}
 
         <a
             href="{{ url_for('community.edit_community', community_id=community['id']) }}"

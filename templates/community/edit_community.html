@@ -4,6 +4,11 @@
     Edit Community
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/community/create_community.css') }}">
+{% endblock %}
+
 {% block main %}
 
 <section class="create-community-page">
@@ -22,8 +27,8 @@
                 <h1>Edit Community</h1>
 
                 <p class="create-subtitle">
-                    Build a place where students can ask questions,
-                    share resources, collaborate, and learn together.
+                    Update your community's name, description, category,
+                    or cover image.
                 </p>
 
             </div>
@@ -53,10 +58,10 @@
                         class="form-control"
                         id="community_name"
                         name="community_name"
-                        value="{{ community['name'] }}"
                         type="text"
                         maxlength="100"
                         autocomplete="off"
+                        value="{{ community['name'] }}"
                         placeholder="e.g. CS50x, Algorithms, Calculus I"
                         required>
 
@@ -79,7 +84,7 @@
                         </label>
 
                         <span id="description-counter">
-                            0 / 1000
+                            {{ community['description']|length }} / 1000
                         </span>
 
                     </div>
@@ -90,7 +95,9 @@
                         name="description"
                         rows="6"
                         maxlength="1000"
-                        required>{{ community["description"] }}</textarea>
+                        autocomplete="off"
+                        placeholder="Describe what your community is about..."
+                        required>{{ community['description'] }}</textarea>
 
                 </div>
 
@@ -114,13 +121,45 @@
                         name="category"
                         required>
 
-                        <option value="" selected disabled>
+                        <option value="" disabled
+                            {% if not community['category'] %}selected{% endif %}>
                             Select a category
                         </option>
 
-                        <option
-                            value="Programming"
-                            {% if community["category"]=="Programming" %}selected{% endif %}>
+                        <option value="Programming"
+                            {% if community['category']=="Programming" %}selected{% endif %}>
+                            💻 Programming
+                        </option>
+
+                        <option value="Mathematics"
+                            {% if community['category']=="Mathematics" %}selected{% endif %}>
+                            📐 Mathematics
+                        </option>
+
+                        <option value="Science"
+                            {% if community['category']=="Science" %}selected{% endif %}>
+                            🧪 Science
+                        </option>
+
+                        <option value="Design"
+                            {% if community['category']=="Design" %}selected{% endif %}>
+                            🎨 Design
+                        </option>
+
+                        <option value="Business"
+                            {% if community['category']=="Business" %}selected{% endif %}>
+                            💼 Business
+                        </option>
+
+                        <option value="Languages"
+                            {% if community['category']=="Languages" %}selected{% endif %}>
+                            🌍 Languages
+                        </option>
+
+                        <option value="Other"
+                            {% if community['category']=="Other" %}selected{% endif %}>
+                            📚 Other
+                        </option>
 
                     </select>
 
@@ -140,6 +179,13 @@
 
                     </label>
 
+                    {% if community['cover_image'] %}
+                        <img
+                            src="{{ url_for('static', filename='uploads/' ~ community['cover_image']) }}"
+                            alt="Current cover image"
+                            class="current-cover-preview">
+                    {% endif %}
+
                     <div class="upload-box">
 
                         <input
@@ -154,7 +200,11 @@
                             📷
                             <br><br>
 
-                            Upload a cover image
+                            {% if community['cover_image'] %}
+                                Upload a new cover image to replace the current one
+                            {% else %}
+                                Upload a cover image
+                            {% endif %}
                             <br>
 
                             <small>
@@ -174,7 +224,7 @@
                 <div class="button-group">
 
                     <a
-                        href="{{ url_for('community.communities') }}"
+                        href="{{ url_for('community.community', community_id=community['id']) }}"
                         class="btn btn-outline-secondary">
 
                         Cancel
@@ -185,7 +235,7 @@
                         class="btn btn-primary"
                         type="submit">
 
-                        Update Community
+                        Save Changes
 
                     </button>
 

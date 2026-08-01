@@ -97,6 +97,15 @@
   padding:1.25rem;
   background:rgba(255,255,255,.02)
 }
+
+.create-community-page .current-cover-preview{
+  width:100%;
+  max-height:220px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:1rem;
+  border:1px solid var(--color-border);
+}
 .create-community-page .upload-box:hover{
   border-color:var(--color-accent);
   background:rgba(46,214,176,.05)
