@@ -195,17 +195,13 @@
     color:#aeb6ae;
 }
 
-/* File input
-   (the filename text sits in the browser's native, unstylable area,
-   which renders on a white background regardless of the page's dark
-   theme — so it needs a dark color here, not the pale cream used for
-   the rest of the form's inputs.) */
-.create-community-page input[type="file"]{
-    color:#1d2421;
-}
-
-/* File button */
-.create-community-page input[type="file"]::file-selector-button{
+/* Custom file button + filename display
+   (replaces the native <input type="file">, whose "chosen filename"
+   text ignores the CSS `color` property in every major browser — no
+   selector specificity can fix that, so the input is now hidden and
+   this label/span pair fully replaces its visible UI.) */
+.create-community-page .file-choose-btn{
+    display:inline-block;
     background:#f4dfb2;
     color:#1d2421;
     border:none;
@@ -213,10 +209,18 @@
     padding:.6rem 1rem;
     font-weight:600;
     cursor:pointer;
+    transition:.2s;
 }
 
-.create-community-page input[type="file"]::file-selector-button:hover{
+.create-community-page .file-choose-btn:hover{
     background:#f7e7c4;
+}
+
+.create-community-page .file-chosen-name{
+    margin-left:.75rem;
+    color:var(--color-text-secondary);
+    font-size:.95rem;
+    vertical-align:middle;
 }
 
 /* Make typed text clearly visible

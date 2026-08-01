@@ -175,12 +175,20 @@
 
                     <div class="upload-box">
 
+                        <label for="cover_image" class="file-choose-btn">
+                            Choose File
+                        </label>
+
+                        <span id="cover-filename" class="file-chosen-name">
+                            No file chosen
+                        </span>
+
                         <input
                             type="file"
                             id="cover_image"
                             name="cover_image"
-                            class="form-control"
-                            accept=".jpg,.jpeg,.png,.webp">
+                            accept=".jpg,.jpeg,.png,.webp"
+                            hidden>
 
                         <p class="upload-text">
 
@@ -246,6 +254,7 @@ description.addEventListener("input", function(){
 
 const coverInput = document.getElementById("cover_image");
 const coverPreview = document.getElementById("cover-preview");
+const coverFilename = document.getElementById("cover-filename");
 
 coverInput.addEventListener("change", function(){
 
@@ -253,10 +262,12 @@ coverInput.addEventListener("change", function(){
 
         coverPreview.src = URL.createObjectURL(this.files[0]);
         coverPreview.style.display = "block";
+        coverFilename.textContent = this.files[0].name;
 
     } else {
 
         coverPreview.style.display = "none";
+        coverFilename.textContent = "No file chosen";
 
     }
 

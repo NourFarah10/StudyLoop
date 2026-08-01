@@ -181,19 +181,34 @@
 
                     {% if community['cover_image'] %}
                         <img
+                            id="cover-preview"
                             src="{{ url_for('static', filename='uploads/' ~ community['cover_image']) }}"
                             alt="Current cover image"
                             class="current-cover-preview">
+                    {% else %}
+                        <img
+                            id="cover-preview"
+                            class="current-cover-preview"
+                            style="display:none;"
+                            alt="Cover image preview">
                     {% endif %}
 
                     <div class="upload-box">
+
+                        <label for="cover_image" class="file-choose-btn">
+                            Choose File
+                        </label>
+
+                        <span id="cover-filename" class="file-chosen-name">
+                            No file chosen
+                        </span>
 
                         <input
                             type="file"
                             id="cover_image"
                             name="cover_image"
-                            class="form-control"
-                            accept=".jpg,.jpeg,.png,.webp">
+                            accept=".jpg,.jpeg,.png,.webp"
+                            hidden>
 
                         <p class="upload-text">
 
@@ -258,6 +273,27 @@ description.addEventListener("input", function(){
 
     counter.textContent =
         `${this.value.length} / 1000`;
+
+});
+
+const coverInput = document.getElementById("cover_image");
+const coverPreview = document.getElementById("cover-preview");
+const coverFilename = document.getElementById("cover-filename");
+
+coverInput.addEventListener("change", function(){
+
+    if(this.files && this.files[0]){
+
+        coverPreview.src = URL.createObjectURL(this.files[0]);
+        coverPreview.style.display = "block";
+        coverFilename.textContent = this.files[0].name;
+
+    } else {
+
+        coverPreview.style.display = "none";
+        coverFilename.textContent = "No file chosen";
+
+    }
 
 });
 
