@@ -4,29 +4,34 @@
 Edit Post
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/post/create_post.css') }}">
+{% endblock %}
+
 {% block main %}
 
 <section class="create-post-page">
 
-    <div class="post-form-card">
+    <div class="post-card">
 
         <div class="post-header">
 
             <img
-                src="{% if user["profile_image"] %}
-                        {{ url_for('static', filename='uploads/' ~ user["profile_image"]) }}
+                src="{% if user["profile_image"] and user["profile_image"] != 'default-profile.jpg' %}
+                        {{ url_for('static', filename='uploads/' ~ user["profile_image']) }}
                     {% else %}
                         {{ url_for('static', filename='images/default-profile.jpg') }}
                     {% endif %}"
-                class="profile-picture">
+                class="post-avatar">
 
             <div>
 
-                <h2>Edit your post</h2>
+                <h4>Edit your post</h4>
 
-                <p class="text-muted">
+                <small class="text-muted">
                     Update your post and save the changes.
-                </p>
+                </small>
 
             </div>
 
@@ -45,7 +50,7 @@ Edit Post
 
                 <input
                     autofocus
-                    class="form-control"
+                    class="form-control post-title"
                     name="title"
                     type="text"
                     value="{{ post['title'] }}"
@@ -62,7 +67,7 @@ Edit Post
                 </label>
 
                 <textarea
-                    class="form-control post-textarea"
+                    class="form-control post-content"
                     name="content"
                     rows="8"
                     maxlength="5000"
