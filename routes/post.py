@@ -77,6 +77,7 @@ def create_post(community_id):
 
         return render_template(
             "community/create_post.html",
+            community=community,
             community_id=community_id,
             user=user
         )
