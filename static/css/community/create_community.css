@@ -195,9 +195,13 @@
     color:#aeb6ae;
 }
 
-/* File input */
+/* File input
+   (the filename text sits in the browser's native, unstylable area,
+   which renders on a white background regardless of the page's dark
+   theme — so it needs a dark color here, not the pale cream used for
+   the rest of the form's inputs.) */
 .create-community-page input[type="file"]{
-    color:#f8f5ef;
+    color:#1d2421;
 }
 
 /* File button */
