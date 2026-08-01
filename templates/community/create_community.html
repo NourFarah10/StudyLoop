@@ -165,6 +165,14 @@
 
                     </label>
 
+                    <!-- Live preview of the chosen file, before upload.
+                         Hidden until a file is actually selected. -->
+                    <img
+                        id="cover-preview"
+                        class="current-cover-preview"
+                        style="display:none;"
+                        alt="Cover image preview">
+
                     <div class="upload-box">
 
                         <input
@@ -233,6 +241,24 @@ description.addEventListener("input", function(){
 
     counter.textContent =
         `${this.value.length} / 1000`;
+
+});
+
+const coverInput = document.getElementById("cover_image");
+const coverPreview = document.getElementById("cover-preview");
+
+coverInput.addEventListener("change", function(){
+
+    if(this.files && this.files[0]){
+
+        coverPreview.src = URL.createObjectURL(this.files[0]);
+        coverPreview.style.display = "block";
+
+    } else {
+
+        coverPreview.style.display = "none";
+
+    }
 
 });
 
