@@ -18,7 +18,6 @@ from database.db import get_db
 
 community_bp = Blueprint("community", __name__)
 
-
 # ==========================================================
 # SEARCH PAGE
 # ==========================================================
