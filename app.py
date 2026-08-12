@@ -65,7 +65,6 @@ app.serializer = serializer
 app.register_blueprint(profile_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(comment_bp)
-app.register_blueprint(community_bp)
 app.register_blueprint(home_bp)
 app.register_blueprint(like_bp)
 app.register_blueprint(community_bp)
