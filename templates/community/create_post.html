@@ -4,6 +4,11 @@
 Create Post
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/post/create_post.css') }}">
+{% endblock %}
+
 {% block main %}
 
 <section class="create-post-page">
@@ -113,21 +118,45 @@ Create Post
 
             </div>
 
-            <!-- Image -->
+            <!-- Media -->
 
             <div class="mb-4">
 
                 <label class="form-label">
 
-                    Attachment (Optional)
+                    Photos / Videos (Optional)
 
                 </label>
 
-                <input
-                    type="file"
-                    name="image"
-                    class="form-control"
-                    accept="image/*">
+                <div class="media-upload-box">
+
+                    <label for="media" class="file-choose-btn">
+                        Choose Files
+                    </label>
+
+                    <span id="media-filecount" class="file-chosen-name">
+                        No files chosen
+                    </span>
+
+                    <input
+                        type="file"
+                        id="media"
+                        name="media"
+                        accept="image/*,video/*"
+                        multiple
+                        hidden>
+
+                    <p class="upload-text">
+                        Add up to several images or videos to your post
+                        <br>
+                        <small>
+                            JPG, PNG, WebP, GIF, MP4, WebM, MOV
+                        </small>
+                    </p>
+
+                </div>
+
+                <div id="media-preview-grid" class="media-preview-grid"></div>
 
             </div>
 
@@ -160,5 +189,46 @@ Create Post
     </div>
 
 </section>
+
+<script>
+
+const mediaInput = document.getElementById("media");
+const mediaFilecount = document.getElementById("media-filecount");
+const mediaPreviewGrid = document.getElementById("media-preview-grid");
+
+mediaInput.addEventListener("change", function () {
+
+    mediaPreviewGrid.innerHTML = "";
+
+    const files = Array.from(this.files || []);
+
+    if (files.length === 0) {
+
+        mediaFilecount.textContent = "No files chosen";
+        return;
+    }
+
+    mediaFilecount.textContent =
+        files.length === 1 ? files[0].name : `${files.length} files selected`;
+
+    files.forEach(file => {
+
+        const url = URL.createObjectURL(file);
+        const isVideo = file.type.startsWith("video/");
+
+        const item = document.createElement("div");
+        item.className = "media-preview-item";
+
+        item.innerHTML = isVideo
+            ? `<video src="${url}" muted></video>`
+            : `<img src="${url}" alt="Selected image">`;
+
+        mediaPreviewGrid.appendChild(item);
+
+    });
+
+});
+
+</script>
 
 {% endblock %}

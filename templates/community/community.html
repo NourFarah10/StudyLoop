@@ -167,6 +167,43 @@
 
         </div>
 
+        <!-- MEDIA GALLERY -->
+
+        {% set post_media = media_by_post.get(post["id"], []) %}
+
+        {% if post_media %}
+
+            <div class="feed-media-grid feed-media-count-{{ post_media|length if post_media|length <= 4 else 5 }}">
+
+                {% for media in post_media %}
+
+                    <div class="feed-media-item">
+
+                        {% if media["media_type"] == "image" %}
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' ~ media['file_path']) }}"
+                                alt="Post attachment"
+                                loading="lazy">
+
+                        {% else %}
+
+                            <video
+                                src="{{ url_for('static', filename='uploads/' ~ media['file_path']) }}"
+                                controls
+                                preload="metadata">
+                            </video>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
         <!-- STATS -->
 
         <div class="post-stats">

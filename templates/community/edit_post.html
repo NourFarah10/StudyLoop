@@ -39,7 +39,8 @@ Edit Post
 
         <form
             action="{{ url_for('post.edit_post', community_id=community_id, post_id=post['id']) }}"
-            method="post">
+            method="post"
+            enctype="multipart/form-data">
 
             <!-- Title -->
             <div class="mb-4">
@@ -116,6 +117,91 @@ Edit Post
 
             </div>
 
+            <!-- Existing Media -->
+
+            {% if existing_media %}
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Current Photos / Videos
+                    </label>
+
+                    <div class="media-preview-grid">
+
+                        {% for media in existing_media %}
+
+                            <div class="media-preview-item existing-media-item">
+
+                                {% if media["media_type"] == "image" %}
+                                    <img
+                                        src="{{ url_for('static', filename='uploads/' ~ media['file_path']) }}"
+                                        alt="Post attachment">
+                                {% else %}
+                                    <video
+                                        src="{{ url_for('static', filename='uploads/' ~ media['file_path']) }}"
+                                        muted>
+                                    </video>
+                                {% endif %}
+
+                                <label class="media-delete-toggle">
+                                    <input
+                                        type="checkbox"
+                                        name="delete_media"
+                                        value="{{ media['id'] }}">
+                                    Remove
+                                </label>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+            <!-- New Media -->
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    Add More Photos / Videos (Optional)
+                </label>
+
+                <div class="media-upload-box">
+
+                    <label for="media" class="file-choose-btn">
+                        Choose Files
+                    </label>
+
+                    <span id="media-filecount" class="file-chosen-name">
+                        No files chosen
+                    </span>
+
+                    <input
+                        type="file"
+                        id="media"
+                        name="media"
+                        accept="image/*,video/*"
+                        multiple
+                        hidden>
+
+                    <p class="upload-text">
+                        Add up to several images or videos to your post
+                        <br>
+                        <small>
+                            JPG, PNG, WebP, GIF, MP4, WebM, MOV
+                        </small>
+                    </p>
+
+                </div>
+
+                <div id="media-preview-grid" class="media-preview-grid"></div>
+
+            </div>
+
             <div class="post-buttons">
 
                 <a
@@ -141,5 +227,46 @@ Edit Post
     </div>
 
 </section>
+
+<script>
+
+const mediaInput = document.getElementById("media");
+const mediaFilecount = document.getElementById("media-filecount");
+const mediaPreviewGrid = document.getElementById("media-preview-grid");
+
+mediaInput.addEventListener("change", function () {
+
+    mediaPreviewGrid.innerHTML = "";
+
+    const files = Array.from(this.files || []);
+
+    if (files.length === 0) {
+
+        mediaFilecount.textContent = "No files chosen";
+        return;
+    }
+
+    mediaFilecount.textContent =
+        files.length === 1 ? files[0].name : `${files.length} files selected`;
+
+    files.forEach(file => {
+
+        const url = URL.createObjectURL(file);
+        const isVideo = file.type.startsWith("video/");
+
+        const item = document.createElement("div");
+        item.className = "media-preview-item";
+
+        item.innerHTML = isVideo
+            ? `<video src="${url}" muted></video>`
+            : `<img src="${url}" alt="Selected image">`;
+
+        mediaPreviewGrid.appendChild(item);
+
+    });
+
+});
+
+</script>
 
 {% endblock %}
