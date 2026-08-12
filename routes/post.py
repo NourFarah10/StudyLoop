@@ -6,105 +6,129 @@ from flask import (
     flash,
     redirect,
     url_for,
+    jsonify,
     current_app
 )
 
 import os
 import uuid
-
+from werkzeug.utils import secure_filename
 from helpers import login_required
 from database.db import get_db
 
-post_bp = Blueprint("post", __name__)
+community_bp = Blueprint("community", __name__)
 
 
 # ==========================================================
-# MEDIA HELPERS
+# SEARCH PAGE
 # ==========================================================
 
-ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp", "gif"}
-ALLOWED_VIDEO_EXTENSIONS = {"mp4", "webm", "mov"}
-
-
-def save_post_media(files, post_id, cursor):
-    """
-    Saves each uploaded file to disk and inserts a matching row into
-    post_media. Files with an unsupported extension are silently
-    skipped. Multiple files (images and/or videos, mixed) are all
-    attached to the same post_id.
-    """
-
-    for file in files:
-
-        if not file or not file.filename:
-            continue
-
-        extension = os.path.splitext(file.filename)[1].lower().lstrip(".")
-
-        if extension in ALLOWED_IMAGE_EXTENSIONS:
-            media_type = "image"
-        elif extension in ALLOWED_VIDEO_EXTENSIONS:
-            media_type = "video"
-        else:
-            # Unsupported file type — skip it rather than failing
-            # the whole post submission.
-            continue
-
-        filename = f"{uuid.uuid4().hex}.{extension}"
-
-        upload_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"],
-            filename
-        )
-
-        file.save(upload_path)
-
-        cursor.execute("""
-            INSERT INTO post_media
-            (
-                post_id,
-                file_path,
-                media_type
-            )
-            VALUES (?, ?, ?)
-        """, (
-            post_id,
-            filename,
-            media_type
-        ))
-
-
-def delete_post_media_files(media_rows):
-    """
-    Deletes the actual files on disk for the given post_media rows.
-    (Deleting the DB rows themselves is handled separately — either
-    via explicit DELETE, or automatically via ON DELETE CASCADE when
-    the parent post is deleted.)
-    """
-
-    for media in media_rows:
-
-        file_path = os.path.join(
-            current_app.config["UPLOAD_FOLDER"],
-            media["file_path"]
-        )
-
-        if os.path.exists(file_path):
-            os.remove(file_path)
-
-
-# ==========================================================
-# CREATE POST
-# ==========================================================
-
-@post_bp.route("/community/<int:community_id>/posts/create", methods=["GET", "POST"])
+@community_bp.route("/community/search")
 @login_required
-def create_post(community_id):
+def search_community():
+    return render_template("community/community_search.html")
+
+
+# ==========================================================
+# SEARCH API
+# ==========================================================
+
+@community_bp.route("/api/community/search")
+@login_required
+def community_search_api():
+
+    query = request.args.get("q", "").strip()
 
     conn = get_db()
     cursor = conn.cursor()
 
-    # Community exists?
+    cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.description,
+            c.category,
+
+            COUNT(cm.user_id) AS members,
+
+            EXISTS(
+                SELECT 1
+                FROM community_members
+                WHERE community_id = c.id
+                AND user_id = ?
+            ) AS joined
+
+        FROM communities c
+
+        LEFT JOIN community_members cm
+            ON cm.community_id = c.id
+
+        WHERE c.name LIKE ?
+
+        GROUP BY c.id
+
+        ORDER BY c.name
+    """, (
+        session["user_id"],
+        f"%{query}%"
+    ))
+
+    communities = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return jsonify(communities)
+
+
+# ==========================================================
+# MY COMMUNITIES
+# ==========================================================
+
+@community_bp.route("/communities")
+@login_required
+def communities():
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT communities.*
+
+        FROM communities
+
+        JOIN community_members
+            ON community_members.community_id = communities.id
+
+        WHERE community_members.user_id = ?
+
+        ORDER BY communities.name
+    """, (session["user_id"],))
+
+    communities = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "community/communities.html",
+        communities=communities
+    )
+
+
+# ==========================================================
+# COMMUNITY PAGE
+# ==========================================================
+
+@community_bp.route("/community/<int:community_id>")
+@login_required
+def community(community_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # --------------------------
+    # Community
+    # --------------------------
+
     cursor.execute("""
         SELECT *
         FROM communities
@@ -118,7 +142,541 @@ def create_post(community_id):
         flash("Community not found.")
         return redirect(url_for("community.communities"))
 
-    # User is a member?
+    # --------------------------
+    # Member count
+    # --------------------------
+
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM community_members
+        WHERE community_id = ?
+    """, (community_id,))
+
+    member_count = cursor.fetchone()["total"]
+
+    # --------------------------
+    # Is current user a member?
+    # --------------------------
+
+    cursor.execute("""
+        SELECT 1
+        FROM community_members
+        WHERE community_id = ?
+        AND user_id = ?
+    """, (
+        community_id,
+        session["user_id"]
+    ))
+
+    is_member = cursor.fetchone() is not None
+    is_owner = community["created_by"] == session["user_id"]
+
+    # --------------------------
+    # Current user
+    # --------------------------
+
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE id = ?
+    """, (session["user_id"],))
+
+    current_user = cursor.fetchone()
+
+    # --------------------------
+    # Posts
+    # --------------------------
+    cursor.execute("""
+        SELECT
+
+            posts.*,
+
+            users.username,
+            users.profile_image,
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+            ) AS reaction_total,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='LIKE'
+            ) AS like_count,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='LOVE'
+            ) AS love_count,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='CARE'
+            ) AS care_count,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='HAHA'
+            ) AS haha_count,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='WOW'
+            ) AS wow_count,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='SAD'
+            ) AS sad_count,
+
+            (
+                SELECT COUNT(*)
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND reaction='ANGRY'
+            ) AS angry_count,
+
+            (
+                SELECT COUNT(*)
+                FROM comments
+                WHERE comments.post_id = posts.id
+            ) AS comment_count,
+
+            (
+                SELECT reaction
+                FROM post_reactions
+                WHERE post_reactions.post_id = posts.id
+                AND post_reactions.user_id = ?
+                LIMIT 1
+            ) AS user_reaction
+
+        FROM posts
+
+        JOIN users
+            ON users.id = posts.user_id
+
+        WHERE posts.community_id = ?
+
+        ORDER BY posts.created_at DESC
+    """, (
+        session["user_id"],
+        community_id
+    ))
+
+    posts = cursor.fetchall()
+
+    # --------------------------
+    # Media for these posts
+    # (grouped in Python by post_id, since a post can have several
+    # images/videos attached)
+    # --------------------------
+
+    media_by_post = {}
+
+    post_ids = [post["id"] for post in posts]
+
+    if post_ids:
+
+        placeholders = ",".join("?" * len(post_ids))
+
+        cursor.execute(f"""
+            SELECT
+                id,
+                post_id,
+                file_path,
+                media_type
+            FROM post_media
+            WHERE post_id IN ({placeholders})
+            ORDER BY id ASC
+        """, post_ids)
+
+        for row in cursor.fetchall():
+            media_by_post.setdefault(row["post_id"], []).append(dict(row))
+
+    conn.close()
+
+    return render_template(
+        "community/community.html",
+        community=community,
+        member_count=member_count,
+        is_member=is_member,
+        is_owner=is_owner,
+        current_user=current_user,
+        posts=posts,
+        media_by_post=media_by_post
+    )
+
+
+# ==========================================================
+# CREATE COMMUNITY
+# ==========================================================
+
+@community_bp.route("/create-community", methods=["GET", "POST"])
+@login_required
+def create_community():
+
+    if request.method == "GET":
+        return render_template("community/create_community.html")
+
+    community_name = request.form.get("community_name", "").strip()
+    description = request.form.get("description", "").strip()
+    category = request.form.get("category")
+
+    if not community_name:
+        flash("Community name is required.")
+        return redirect(url_for("community.create_community"))
+
+    if not description:
+        flash("Description is required.")
+        return redirect(url_for("community.create_community"))
+
+    if not category:
+        flash("Category is required.")
+        return redirect(url_for("community.create_community"))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id
+        FROM communities
+        WHERE name = ?
+    """, (community_name,))
+
+    if cursor.fetchone():
+
+        conn.close()
+
+        flash("A community with this name already exists.")
+
+        return redirect(url_for("community.create_community"))
+
+    cursor.execute("""
+        INSERT INTO communities
+        (
+            name,
+            description,
+            cover_image,
+            category,
+            created_by
+        )
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        community_name,
+        description,
+        None,
+        category,
+        session["user_id"]
+    ))
+
+    community_id = cursor.lastrowid
+
+    cursor.execute("""
+        INSERT INTO community_members
+        (
+            user_id,
+            community_id
+        )
+        VALUES (?, ?)
+    """, (
+        session["user_id"],
+        community_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    flash("Community created successfully.")
+
+    return redirect(
+        url_for(
+            "community.community",
+            community_id=community_id
+        )
+    )
+
+# ==========================================================
+# EDIT COMMUNITY
+# ==========================================================
+
+@community_bp.route("/edit-community/<int:community_id>", methods=["GET", "POST"])
+@login_required
+def edit_community(community_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Get community
+    cursor.execute("""
+        SELECT *
+        FROM communities
+        WHERE id = ?
+    """, (community_id,))
+
+    community = cursor.fetchone()
+
+    if community is None:
+        conn.close()
+        flash("Community not found.")
+        return redirect(url_for("community.communities"))
+
+    # Only creator can edit
+    if community["created_by"] != session["user_id"]:
+        conn.close()
+        flash("You don't have permission to edit this community.")
+        return redirect(
+            url_for(
+                "community.community",
+                community_id=community_id
+            )
+        )
+
+    # =====================================================
+    # SAVE CHANGES
+    # =====================================================
+
+    if request.method == "POST":
+
+        community_name = request.form.get("community_name", "").strip()
+        description = request.form.get("description", "").strip()
+        category = request.form.get("category")
+        cover_image = request.files.get("cover_image")
+        # Validation
+        if not community_name:
+            flash("Community name is required.")
+            conn.close()
+            return redirect(request.url)
+
+        if not description:
+            flash("Description is required.")
+            conn.close()
+            return redirect(request.url)
+
+        if not category:
+            flash("Category is required.")
+            conn.close()
+            return redirect(request.url)
+
+        # Check duplicate name
+        cursor.execute("""
+            SELECT id
+            FROM communities
+            WHERE name = ?
+            AND id != ?
+        """, (
+            community_name,
+            community_id
+        ))
+
+        if cursor.fetchone():
+            conn.close()
+            flash("Another community already has this name.")
+            return redirect(request.url)
+
+        # Keep the current image unless a new one is uploaded
+        filename = community["cover_image"]
+
+        if cover_image and cover_image.filename:
+
+            extension = os.path.splitext(cover_image.filename)[1].lower()
+
+            filename = f"{uuid.uuid4().hex}{extension}"
+
+            upload_path = os.path.join(
+                current_app.config["UPLOAD_FOLDER"],
+                filename
+            )
+
+            cover_image.save(upload_path)
+
+            # Delete old image if it exists
+            if community["cover_image"]:
+
+                old_image = os.path.join(
+                    current_app.config["UPLOAD_FOLDER"],
+                    community["cover_image"]
+                )
+
+                if os.path.exists(old_image):
+                    os.remove(old_image)
+
+        # Update community
+        cursor.execute("""
+            UPDATE communities
+            SET
+                name = ?,
+                description = ?,
+                category = ?,
+                cover_image = ?
+            WHERE id = ?
+        """, (
+            community_name,
+            description,
+            category,
+            filename,
+            community_id
+        ))
+
+        conn.commit()
+        conn.close()
+
+        flash("Community updated successfully!")
+
+        return redirect(
+            url_for(
+                "community.community",
+                community_id=community_id
+            )
+        )
+
+    # =====================================================
+    # SHOW EDIT PAGE
+    # =====================================================
+
+    conn.close()
+
+    return render_template(
+        "community/edit_community.html",
+        community=community
+    )
+
+# ==========================================================
+# JOIN COMMUNITY
+# ==========================================================
+
+@community_bp.route("/join-community/<int:community_id>")
+@login_required
+def join_community(community_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Community exists?
+    cursor.execute("""
+        SELECT id
+        FROM communities
+        WHERE id = ?
+    """, (community_id,))
+
+    if cursor.fetchone() is None:
+
+        conn.close()
+
+        flash("Community not found.")
+
+        return redirect(url_for("community.communities"))
+
+    # Already a member?
+    cursor.execute("""
+        SELECT 1
+        FROM community_members
+        WHERE user_id = ?
+        AND community_id = ?
+    """, (
+        session["user_id"],
+        community_id
+    ))
+
+    if cursor.fetchone():
+
+        conn.close()
+
+        flash("You are already a member.")
+
+        return redirect(
+            url_for(
+                "community.community",
+                community_id=community_id
+            )
+        )
+
+    # Join community
+    cursor.execute("""
+        INSERT INTO community_members
+        (
+            user_id,
+            community_id
+        )
+        VALUES (?, ?)
+    """, (
+        session["user_id"],
+        community_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    flash("You joined the community!")
+
+    return redirect(
+        url_for(
+            "community.community",
+            community_id=community_id
+        )
+    )
+
+
+# ==========================================================
+# LEAVE COMMUNITY
+# ==========================================================
+
+@community_bp.route("/leave-community/<int:community_id>")
+@login_required
+def leave_community(community_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Community exists?
+    cursor.execute("""
+        SELECT id
+        FROM communities
+        WHERE id = ?
+    """, (community_id,))
+
+    if cursor.fetchone() is None:
+
+        conn.close()
+
+        flash("Community not found.")
+
+        return redirect(url_for("community.communities"))
+
+    # Creator cannot leave
+    cursor.execute("""
+        SELECT created_by
+        FROM communities
+        WHERE id = ?
+    """, (community_id,))
+
+    community = cursor.fetchone()
+
+    if community["created_by"] == session["user_id"]:
+
+        conn.close()
+
+        flash("The creator cannot leave their own community.")
+
+        return redirect(
+            url_for(
+                "community.community",
+                community_id=community_id
+            )
+        )
+
+    # Is member?
     cursor.execute("""
         SELECT 1
         FROM community_members
@@ -133,7 +691,7 @@ def create_post(community_id):
 
         conn.close()
 
-        flash("Join the community before creating a post.")
+        flash("You are not a member.")
 
         return redirect(
             url_for(
@@ -142,385 +700,19 @@ def create_post(community_id):
             )
         )
 
+    # Leave
     cursor.execute("""
-        SELECT *
-        FROM users
-        WHERE id = ?
-    """, (session["user_id"],))
-
-    user = cursor.fetchone()
-
-    if request.method == "GET":
-
-        conn.close()
-
-        return render_template(
-            "community/create_post.html",
-            community=community,
-            community_id=community_id,
-            user=user
-        )
-
-    title = request.form.get("title", "").strip()
-    content = request.form.get("content", "").strip()
-    tag = request.form.get("tag")
-
-    if not title:
-
-        conn.close()
-
-        flash("Title is required.")
-
-        return redirect(
-            url_for(
-                "post.create_post",
-                community_id=community_id
-            )
-        )
-
-    if not content:
-
-        conn.close()
-
-        flash("Content is required.")
-
-        return redirect(
-            url_for(
-                "post.create_post",
-                community_id=community_id
-            )
-        )
-
-    if not tag:
-
-        conn.close()
-
-        flash("Tag is required.")
-
-        return redirect(
-            url_for(
-                "post.create_post",
-                community_id=community_id
-            )
-        )
-
-    cursor.execute("""
-        INSERT INTO posts
-        (
-            community_id,
-            user_id,
-            title,
-            content,
-            tag
-        )
-        VALUES (?, ?, ?, ?, ?)
+        DELETE FROM community_members
+        WHERE user_id = ?
+        AND community_id = ?
     """, (
-        community_id,
         session["user_id"],
-        title,
-        content,
-        tag
-    ))
-
-    post_id = cursor.lastrowid
-
-    media_files = request.files.getlist("media")
-    save_post_media(media_files, post_id, cursor)
-
-    conn.commit()
-    conn.close()
-
-    flash("Post created successfully!")
-
-    return redirect(
-        url_for(
-            "community.community",
-            community_id=community_id
-        )
-    )
-
-
-# ==========================================================
-# EDIT POST
-# ==========================================================
-
-@post_bp.route("/community/<int:community_id>/posts/<int:post_id>/edit", methods=["GET", "POST"])
-@login_required
-def edit_post(community_id, post_id):
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT *
-        FROM communities
-        WHERE id = ?
-    """, (community_id,))
-
-    community = cursor.fetchone()
-
-    if community is None:
-
-        conn.close()
-
-        flash("Community not found.")
-
-        return redirect(url_for("community.communities"))
-
-    cursor.execute("""
-        SELECT *
-        FROM posts
-        WHERE id = ?
-        AND community_id = ?
-    """, (
-        post_id,
         community_id
     ))
 
-    post = cursor.fetchone()
-
-    if post is None:
-
-        conn.close()
-
-        flash("Post not found.")
-
-        return redirect(
-            url_for(
-                "community.community",
-                community_id=community_id
-            )
-        )
-
-    if post["user_id"] != session["user_id"]:
-
-        conn.close()
-
-        flash("You can only edit your own posts.")
-
-        return redirect(
-            url_for(
-                "community.community",
-                community_id=community_id
-            )
-        )
-
-    cursor.execute("""
-        SELECT *
-        FROM users
-        WHERE id = ?
-    """, (session["user_id"],))
-
-    user = cursor.fetchone()
-
-    if request.method == "GET":
-
-        cursor.execute("""
-            SELECT *
-            FROM post_media
-            WHERE post_id = ?
-            ORDER BY id ASC
-        """, (post_id,))
-
-        existing_media = cursor.fetchall()
-
-        conn.close()
-
-        return render_template(
-            "community/edit_post.html",
-            post=post,
-            community_id=community_id,
-            user=user,
-            existing_media=existing_media
-        )
-
-    title = request.form.get("title", "").strip()
-    content = request.form.get("content", "").strip()
-    tag = request.form.get("tag")
-
-    if not title:
-
-        conn.close()
-
-        flash("Title is required.")
-
-        return redirect(
-            url_for(
-                "post.edit_post",
-                community_id=community_id,
-                post_id=post_id
-            )
-        )
-
-    if not content:
-
-        conn.close()
-
-        flash("Content is required.")
-
-        return redirect(
-            url_for(
-                "post.edit_post",
-                community_id=community_id,
-                post_id=post_id
-            )
-        )
-
-    if not tag:
-
-        conn.close()
-
-        flash("Tag is required.")
-
-        return redirect(
-            url_for(
-                "post.edit_post",
-                community_id=community_id,
-                post_id=post_id
-            )
-        )
-
-    # -----------------------------------------
-    # Remove any media the user checked for deletion
-    # -----------------------------------------
-
-    delete_media_ids = request.form.getlist("delete_media")
-
-    if delete_media_ids:
-
-        placeholders = ",".join("?" * len(delete_media_ids))
-
-        cursor.execute(f"""
-            SELECT id, file_path
-            FROM post_media
-            WHERE id IN ({placeholders})
-            AND post_id = ?
-        """, (*delete_media_ids, post_id))
-
-        media_to_delete = cursor.fetchall()
-
-        delete_post_media_files(media_to_delete)
-
-        cursor.execute(f"""
-            DELETE FROM post_media
-            WHERE id IN ({placeholders})
-            AND post_id = ?
-        """, (*delete_media_ids, post_id))
-
-    # -----------------------------------------
-    # Add any newly uploaded media
-    # -----------------------------------------
-
-    new_media_files = request.files.getlist("media")
-    save_post_media(new_media_files, post_id, cursor)
-
-    cursor.execute("""
-        UPDATE posts
-
-        SET
-
-            title = ?,
-            content = ?,
-            tag = ?,
-            updated_at = CURRENT_TIMESTAMP
-
-        WHERE id = ?
-    """, (
-        title,
-        content,
-        tag,
-        post_id
-    ))
-
     conn.commit()
     conn.close()
 
-    flash("Post updated successfully!")
+    flash("You left the community.")
 
-    return redirect(
-        url_for(
-            "community.community",
-            community_id=community_id
-        )
-    )
-
-
-# ==========================================================
-# DELETE POST
-# ==========================================================
-
-@post_bp.route("/community/<int:community_id>/posts/<int:post_id>/delete", methods=["POST"])
-@login_required
-def delete_post(community_id, post_id):
-
-    conn = get_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT *
-        FROM posts
-        WHERE id = ?
-        AND community_id = ?
-    """, (
-        post_id,
-        community_id
-    ))
-
-    post = cursor.fetchone()
-
-    if post is None:
-
-        conn.close()
-
-        flash("Post not found.")
-
-        return redirect(
-            url_for(
-                "community.community",
-                community_id=community_id
-            )
-        )
-
-    if post["user_id"] != session["user_id"]:
-
-        conn.close()
-
-        flash("You can only delete your own posts.")
-
-        return redirect(
-            url_for(
-                "community.community",
-                community_id=community_id
-            )
-        )
-
-    # Delete media files from disk before deleting the post — the
-    # post_media rows themselves are removed automatically via
-    # ON DELETE CASCADE once the post row is deleted below.
-    cursor.execute("""
-        SELECT file_path
-        FROM post_media
-        WHERE post_id = ?
-    """, (post_id,))
-
-    media_rows = cursor.fetchall()
-
-    delete_post_media_files(media_rows)
-
-    cursor.execute("""
-        DELETE
-        FROM posts
-        WHERE id = ?
-    """, (post_id,))
-
-    conn.commit()
-    conn.close()
-
-    flash("Post deleted successfully!")
-
-    return redirect(
-        url_for(
-            "community.community",
-            community_id=community_id
-        )
-    )
+    return redirect(url_for("community.communities"))
