@@ -20,12 +20,11 @@ from database.db import get_db
 
 post_bp = Blueprint("post", __name__)
 
-
 # ==========================================================
 # SEARCH PAGE
 # ==========================================================
 
-@community_bp.route("/community/search")
+@post_bp.route("/community/search")
 @login_required
 def search_community():
     return render_template("community/community_search.html")
@@ -35,7 +34,7 @@ def search_community():
 # SEARCH API
 # ==========================================================
 
-@community_bp.route("/api/community/search")
+@post_bp.route("/api/community/search")
 @login_required
 def community_search_api():
 
@@ -86,7 +85,7 @@ def community_search_api():
 # MY COMMUNITIES
 # ==========================================================
 
-@community_bp.route("/communities")
+@post_bp.route("/communities")
 @login_required
 def communities():
 
@@ -120,7 +119,7 @@ def communities():
 # COMMUNITY PAGE
 # ==========================================================
 
-@community_bp.route("/community/<int:community_id>")
+@post_bp.route("/community/<int:community_id>")
 @login_required
 def community(community_id):
 
@@ -325,7 +324,7 @@ def community(community_id):
 # CREATE COMMUNITY
 # ==========================================================
 
-@community_bp.route("/create-community", methods=["GET", "POST"])
+@post_bp.route("/create-community", methods=["GET", "POST"])
 @login_required
 def create_community():
 
@@ -413,7 +412,7 @@ def create_community():
 # EDIT COMMUNITY
 # ==========================================================
 
-@community_bp.route("/edit-community/<int:community_id>", methods=["GET", "POST"])
+@post_bp.route("/edit-community/<int:community_id>", methods=["GET", "POST"])
 @login_required
 def edit_community(community_id):
 
@@ -558,7 +557,7 @@ def edit_community(community_id):
 # JOIN COMMUNITY
 # ==========================================================
 
-@community_bp.route("/join-community/<int:community_id>")
+@post_bp.route("/join-community/<int:community_id>")
 @login_required
 def join_community(community_id):
 
@@ -634,7 +633,7 @@ def join_community(community_id):
 # LEAVE COMMUNITY
 # ==========================================================
 
-@community_bp.route("/leave-community/<int:community_id>")
+@post_bp.route("/leave-community/<int:community_id>")
 @login_required
 def leave_community(community_id):
 
