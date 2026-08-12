@@ -276,6 +276,33 @@ def community(community_id):
 
     posts = cursor.fetchall()
 
+    # --------------------------
+    # Post media
+    # --------------------------
+
+    cursor.execute("""
+        SELECT *
+        FROM post_media
+        WHERE post_id IN (
+            SELECT id
+            FROM posts
+            WHERE community_id = ?
+        )
+        ORDER BY id ASC
+    """, (community_id,))
+
+    media_rows = cursor.fetchall()
+
+    media_by_post = {}
+
+    for media in media_rows:
+        post_id = media["post_id"]
+
+        if post_id not in media_by_post:
+            media_by_post[post_id] = []
+
+        media_by_post[post_id].append(media)
+
     conn.close()
 
     return render_template(
@@ -285,7 +312,8 @@ def community(community_id):
         is_member=is_member,
         is_owner=is_owner,
         current_user=current_user,
-        posts=posts
+        posts=posts,
+        media_by_post=media_by_post
     )
 
 
