@@ -12,11 +12,13 @@ from flask import (
 
 import os
 import uuid
+
 from werkzeug.utils import secure_filename
+
 from helpers import login_required
 from database.db import get_db
 
-community_bp = Blueprint("community", __name__)
+post_bp = Blueprint("post", __name__)
 
 
 # ==========================================================
