@@ -972,3 +972,260 @@
     background:#1877f2;
     color:white;
 }
+
+/* ==========================================================================
+   CREATE / EDIT POST PAGE
+   (merged in from create_post.css, which was never actually deployed as
+   its own file — create_post.html and edit_post.html link to it, but
+   that path 404s, so none of this was ever loading)
+========================================================================== */
+
+.create-post-page{
+    padding:60px 20px;
+}
+.post-card{
+    max-width:750px;
+    margin:0 auto;
+    background:#ffffff;
+    border-radius:22px;
+    padding:30px;
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+.post-header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:30px;
+}
+.post-avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #ececec;
+}
+.post-header h4{
+    margin:0;
+    font-size:1.15rem;
+    font-weight:700;
+    color:#222;
+}
+.post-header small{
+    color:#777;
+    font-size:.9rem;
+}
+
+.post-title{
+    border:none !important;
+    box-shadow:none !important;
+    font-size:1.4rem;
+    font-weight:700;
+    padding:0;
+    color:#222;
+    margin-bottom:10px;
+}
+.post-title::placeholder{
+    color:#999;
+}
+
+.post-content{
+    border:none !important;
+    box-shadow:none !important;
+    resize:none;
+    min-height:220px;
+    font-size:1.1rem;
+    line-height:1.8;
+    color:#333;
+    padding:0;
+}
+.post-content::placeholder{
+    color:#888;
+}
+.post-content:focus,
+.post-title:focus{
+    outline:none;
+}
+
+.create-post-page .form-label{
+    font-weight:600;
+    color:#444;
+    margin-bottom:8px;
+}
+.create-post-page .form-select,
+.create-post-page .form-control[type=file]{
+    border-radius:14px;
+    border:1px solid #dddddd;
+    padding:12px 16px;
+    transition:.25s;
+}
+.create-post-page .form-select:focus,
+.create-post-page .form-control[type=file]:focus{
+    border-color:#4f7cff;
+    box-shadow:0 0 0 3px rgba(79,124,255,.15);
+}
+
+/* ==========================================================
+   MEDIA UPLOAD
+========================================================== */
+.media-upload-box{
+    border:2px dashed #d8d8d8;
+    border-radius:16px;
+    padding:1.25rem;
+    background:#fafafa;
+    transition:.25s;
+}
+.media-upload-box:hover{
+    border-color:#4f7cff;
+    background:#f5f8ff;
+}
+
+/* Custom file button + filename display — the native <input
+   type="file"> filename text ignores CSS `color` in every major
+   browser, so the input is hidden and this label/span pair fully
+   replaces its visible UI. */
+.file-choose-btn{
+    display:inline-block;
+    background:#4f7cff;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:.6rem 1.1rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+.file-choose-btn:hover{
+    background:#3f69ea;
+}
+.file-chosen-name{
+    margin-left:.75rem;
+    color:#555;
+    font-size:.95rem;
+    vertical-align:middle;
+}
+.media-upload-box .upload-text{
+    margin:1rem 0 0;
+    text-align:center;
+    color:#777;
+    font-size:.9rem;
+}
+
+/* ==========================================================
+   MEDIA PREVIEW / GALLERY GRID
+   (used both for the "about to upload" preview, and for the
+   existing-media grid shown on the edit page)
+========================================================== */
+.media-preview-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+    gap:10px;
+    margin-top:1rem;
+}
+.media-preview-item{
+    position:relative;
+    border-radius:12px;
+    overflow:hidden;
+    aspect-ratio:1 / 1;
+    background:#000;
+}
+.media-preview-item img,
+.media-preview-item video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+.existing-media-item{
+    display:flex;
+    flex-direction:column;
+}
+.existing-media-item img,
+.existing-media-item video{
+    flex:1;
+}
+.media-delete-toggle{
+    display:flex;
+    align-items:center;
+    gap:.4rem;
+    padding:.4rem .5rem;
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    font-size:.8rem;
+    font-weight:600;
+    cursor:pointer;
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+}
+.media-delete-toggle input{
+    accent-color:#ff4d6d;
+}
+
+.create-post-page .form-control[type=file]{
+    background:#fafafa;
+}
+
+.create-post-page .post-buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:15px;
+    margin-top:35px;
+    border:none;
+    padding-bottom:0;
+}
+.create-post-page .post-buttons .btn{
+    padding:12px 30px;
+    border-radius:999px;
+    font-weight:600;
+    transition:.25s;
+}
+.create-post-page .post-buttons .btn-primary{
+    background:#4f7cff;
+    border:none;
+}
+.create-post-page .post-buttons .btn-primary:hover{
+    background:#3f69ea;
+    transform:translateY(-2px);
+}
+.create-post-page .post-buttons .btn-outline-secondary{
+    border:1px solid #cccccc;
+    color:#444;
+}
+.create-post-page .post-buttons .btn-outline-secondary:hover{
+    background:#f5f5f5;
+}
+
+.create-post-page .mb-3,
+.create-post-page .mb-4{
+    border-bottom:1px solid #f2f2f2;
+    padding-bottom:22px;
+    margin-bottom:22px !important;
+}
+
+@media (max-width:768px){
+    .post-card{
+        padding:22px;
+    }
+    .post-avatar{
+        width:50px;
+        height:50px;
+    }
+    .post-title{
+        font-size:1.2rem;
+    }
+    .post-content{
+        font-size:1rem;
+        min-height:180px;
+    }
+    .create-post-page .post-buttons{
+        flex-direction:column-reverse;
+    }
+    .create-post-page .post-buttons .btn{
+        width:100%;
+    }
+    .media-preview-grid{
+        grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+    }
+}
