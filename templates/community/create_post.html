@@ -196,22 +196,36 @@ const mediaInput = document.getElementById("media");
 const mediaFilecount = document.getElementById("media-filecount");
 const mediaPreviewGrid = document.getElementById("media-preview-grid");
 
-mediaInput.addEventListener("change", function () {
+// Accumulates files across multiple "Choose Files" clicks, since a
+// native <input type="file"> normally REPLACES its selection every
+// time the dialog closes rather than adding to it.
+let selectedFiles = [];
+
+function syncInputFiles() {
+
+    const dataTransfer = new DataTransfer();
+
+    selectedFiles.forEach(file => dataTransfer.items.add(file));
+
+    mediaInput.files = dataTransfer.files;
+}
+
+function renderMediaPreviews() {
 
     mediaPreviewGrid.innerHTML = "";
 
-    const files = Array.from(this.files || []);
-
-    if (files.length === 0) {
+    if (selectedFiles.length === 0) {
 
         mediaFilecount.textContent = "No files chosen";
         return;
     }
 
     mediaFilecount.textContent =
-        files.length === 1 ? files[0].name : `${files.length} files selected`;
+        selectedFiles.length === 1
+            ? selectedFiles[0].name
+            : `${selectedFiles.length} files selected`;
 
-    files.forEach(file => {
+    selectedFiles.forEach((file, index) => {
 
         const url = URL.createObjectURL(file);
         const isVideo = file.type.startsWith("video/");
@@ -223,9 +237,34 @@ mediaInput.addEventListener("change", function () {
             ? `<video src="${url}" muted></video>`
             : `<img src="${url}" alt="Selected image">`;
 
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "media-remove-btn";
+        removeBtn.innerHTML = "&times;";
+
+        removeBtn.addEventListener("click", function () {
+
+            selectedFiles.splice(index, 1);
+            syncInputFiles();
+            renderMediaPreviews();
+
+        });
+
+        item.appendChild(removeBtn);
+
         mediaPreviewGrid.appendChild(item);
 
     });
+}
+
+mediaInput.addEventListener("change", function () {
+
+    const newFiles = Array.from(this.files || []);
+
+    selectedFiles = selectedFiles.concat(newFiles);
+
+    syncInputFiles();
+    renderMediaPreviews();
 
 });
 

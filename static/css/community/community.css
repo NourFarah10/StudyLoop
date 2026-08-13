@@ -1163,6 +1163,28 @@
     accent-color:#ff4d6d;
 }
 
+.media-remove-btn{
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:24px;
+    height:24px;
+    border:none;
+    border-radius:50%;
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    font-size:16px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.2s;
+}
+.media-remove-btn:hover{
+    background:#ff4d6d;
+}
+
 .create-post-page .form-control[type=file]{
     background:#fafafa;
 }
