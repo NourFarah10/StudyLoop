@@ -172,36 +172,50 @@
         {% set post_media = media_by_post.get(post["id"], []) %}
 
         {% if post_media %}
-
-            <div class="feed-media-grid feed-media-count-{{ post_media|length if post_media|length <= 4 else 5 }}">
+            <div class="post-media-grid">
 
                 {% for media in post_media %}
 
-                    <div class="feed-media-item">
+                    {% set media_url = url_for(
+                        'static',
+                        filename='uploads/' ~ media['file_path']
+                    ) %}
 
-                        {% if media["media_type"] == "image" %}
+                    {% if media["media_type"] == "image" %}
 
+                        <div
+                            class="post-media-thumbnail"
+                            data-media-type="image"
+                            data-media-url="{{ media_url }}"
+                        >
                             <img
-                                src="{{ url_for('static', filename='uploads/' ~ media['file_path']) }}"
-                                alt="Post attachment"
-                                loading="lazy">
+                                src="{{ media_url }}"
+                                alt="Post image">
+                        </div>
 
-                        {% else %}
+                    {% else %}
 
+                        <div
+                            class="post-media-thumbnail"
+                            data-media-type="video"
+                            data-media-url="{{ media_url }}"
+                        >
                             <video
-                                src="{{ url_for('static', filename='uploads/' ~ media['file_path']) }}"
-                                controls
+                                src="{{ media_url }}"
+                                muted
                                 preload="metadata">
                             </video>
 
-                        {% endif %}
+                            <div class="video-play-icon">
+                                ▶
+                            </div>
+                        </div>
 
-                    </div>
+                    {% endif %}
 
                 {% endfor %}
 
             </div>
-
         {% endif %}
 
         <!-- STATS -->
@@ -437,6 +451,132 @@
     </div>
 
 </div>
+
+<!-- Media Lightbox -->
+
+<div id="media-lightbox" class="media-lightbox">
+
+    <button
+        type="button"
+        id="lightbox-close"
+        class="lightbox-close">
+        &times;
+    </button>
+
+    <div class="lightbox-content" id="lightbox-content">
+        <!-- Image or video will be inserted here -->
+    </div>
+
+</div>
+
+<script>
+
+const mediaThumbnails =
+    document.querySelectorAll(".post-media-thumbnail");
+
+const lightbox =
+    document.getElementById("media-lightbox");
+
+const lightboxContent =
+    document.getElementById("lightbox-content");
+
+const lightboxClose =
+    document.getElementById("lightbox-close");
+
+
+mediaThumbnails.forEach(thumbnail => {
+
+    thumbnail.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const mediaType =
+            this.dataset.mediaType;
+
+        const mediaUrl =
+            this.dataset.mediaUrl;
+
+        lightboxContent.innerHTML = "";
+
+        if (mediaType === "image") {
+
+            const image =
+                document.createElement("img");
+
+            image.src = mediaUrl;
+            image.alt = "Post image";
+            image.className = "lightbox-image";
+
+            lightboxContent.appendChild(image);
+
+        } else {
+
+            const video =
+                document.createElement("video");
+
+            video.src = mediaUrl;
+            video.className = "lightbox-video";
+
+            video.controls = true;
+            video.autoplay = true;
+            video.playsInline = true;
+
+            lightboxContent.appendChild(video);
+
+        }
+
+        lightbox.classList.add("active");
+
+        document.body.classList.add("lightbox-open");
+
+    });
+
+});
+
+
+function closeLightbox() {
+
+    lightbox.classList.remove("active");
+
+    document.body.classList.remove("lightbox-open");
+
+    // Important: stop video when closing
+    lightboxContent.innerHTML = "";
+
+}
+
+
+lightboxClose.addEventListener(
+    "click",
+    closeLightbox
+);
+
+
+// Click the dark background to close
+
+lightbox.addEventListener("click", function (event) {
+
+    if (event.target === lightbox) {
+        closeLightbox();
+    }
+
+});
+
+
+// Escape key
+
+document.addEventListener("keydown", function (event) {
+
+    if (
+        event.key === "Escape" &&
+        lightbox.classList.contains("active")
+    ) {
+        closeLightbox();
+    }
+
+});
+
+</script>
 
 <script>
     const communityId = {{ community["id"] }};
