@@ -1,6 +1,6 @@
 # StudyLoop
 
-#### Video Demo: <https://youtu.be/rsH0KeAVIeI>
+#### Video Demo: <https://youtu.be/8q27D-EDdgE>
 
 #### Description:
 
