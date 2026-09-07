@@ -172,96 +172,300 @@ to{transform:translateY(-120%) scale(1.2);opacity:0;}
     background:var(--color-accent);
     border-radius:999px;
 }
-/* Grid */
-.community-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:1.5rem;
+/* ==========================================================
+   Community Grid
+   ========================================================== */
+
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2rem;
 }
 
-/* Cards
-   This translucent-white overlay was designed to lighten a dark page
-   background slightly. On the light theme the page background is
-   already near-white, so the same overlay makes the card blend into
-   the page with almost no visible boundary — the light theme override
-   below switches it to a translucent dark tint instead, which has the
-   same "subtly raised" effect on a light background. */
-.community-card{
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    min-height:230px;
-    padding:1.75rem;
+
+/* ==========================================================
+   Community Cards
+   ========================================================== */
+
+.community-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 420px;
+
+    padding: 0;
+
     background:
-    linear-gradient(
-    180deg,
-    rgba(255,255,255,.03),
-    rgba(255,255,255,.01)
-    );
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.03),
+            rgba(255,255,255,.01)
+        );
 
-    backdrop-filter:blur(10px);
-    border:1px solid var(--color-border);
-    border-radius:var(--radius-lg);
-    opacity:0;
-    animation:cardFade .7s forwards;
-    transition:.3s;
+    backdrop-filter: blur(10px);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    animation: cardFade .7s forwards;
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
 }
 
-[data-theme="light"] .community-card{
+
+/* Light Theme */
+
+[data-theme="light"] .community-card {
     background:
-    linear-gradient(
-    180deg,
-    rgba(20,18,12,.035),
-    rgba(20,18,12,.01)
-    );
-    border-color:var(--color-border-strong);
+        linear-gradient(
+            180deg,
+            rgba(20,18,12,.035),
+            rgba(20,18,12,.01)
+        );
+
+    border-color: var(--color-border-strong);
 }
 
-.community-card:nth-child(1){animation-delay:.1s;}
-.community-card:nth-child(2){animation-delay:.25s;}
-.community-card:nth-child(3){animation-delay:.4s;}
-.community-card:nth-child(4){animation-delay:.55s;}
 
-@keyframes cardFade{
-from{opacity:0;transform:translateY(35px);}
-to{opacity:1;transform:translateY(0);}
+/* Card Animation Delays */
+
+.community-card:nth-child(1) {
+    animation-delay: .1s;
 }
 
-.community-card:hover{
-    transform:
-        translateY(-8px)
-        scale(1.02);
-    border-color:var(--color-accent);
+.community-card:nth-child(2) {
+    animation-delay: .25s;
+}
+
+.community-card:nth-child(3) {
+    animation-delay: .4s;
+}
+
+.community-card:nth-child(4) {
+    animation-delay: .55s;
+}
+
+
+/* Card Entrance Animation */
+
+@keyframes cardFade {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================================
+   Card Hover
+   ========================================================== */
+
+.community-card:hover {
+    transform: translateY(-8px) scale(1.02);
+
+    border-color: var(--color-accent);
+
     box-shadow:
         0 25px 50px rgba(0,0,0,.35);
 }
-.community-card p{color:var(--color-text-muted);}
-.community-card .btn{
+
+/* ==========================================================
+   Hover Sliding Shine
+   ========================================================== */
+
+.community-card {
+    position: relative;
+}
+
+/* The animated line */
+.community-card::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 60%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-accent),
+        transparent
+    );
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 10;
+
+    transition: none;
+}
+
+/* Move the line from left to right on hover */
+.community-card:hover::before {
+    opacity: 1;
+
+    animation: cardShine 1s ease forwards;
+}
+
+@keyframes cardShine {
+    from {
+        left: -60%;
+    }
+
+    to {
+        left: 120%;
+    }
+}
+
+/* ==========================================================
+   Community Image
+   ========================================================== */
+
+.community-card-thumb {
+    display: block;
+
+    width: 100%;
+    height: 190px;
+
+    object-fit: cover;
+
+    margin: 0;
+
+    border-radius:
+        var(--radius-lg)
+        var(--radius-lg)
+        0
+        0;
+
     transition:
-        transform .25s,
-        box-shadow .25s,
-        background .25s;
+        transform .4s ease,
+        filter .4s ease;
 }
 
-.community-card .btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(245,223,178,.35);
+
+/* Slight image animation when hovering the card */
+
+.community-card:hover .community-card-thumb {
+    transform: scale(1.04);
+    filter: brightness(1.05);
 }
 
-/* Empty State */
-.activity-card{
-    background:var(--color-surface);
-    border:1px solid var(--color-border);
-    border-radius:var(--radius-lg);
-    padding:2rem;
-    text-align:center;
-}
-.activity-card h3{margin-bottom:.75rem;}
-.activity-card p{color:var(--color-text-secondary);margin-bottom:1.5rem;}
 
-@media(max-width:768px){
-.dashboard{padding:1rem;}
-.dashboard-hero{padding:2rem;}
-.dashboard-hero h1{font-size:2rem;}
-.community-grid{grid-template-columns:1fr;}
+/* ==========================================================
+   Card Content
+
+   Since the card itself no longer has padding, give the
+   content its own padding.
+   ========================================================== */
+
+.community-card > div {
+    padding: 1.5rem 1.75rem .75rem;
+}
+
+.community-card h3 {
+    margin-bottom: .5rem;
+}
+
+.community-card p {
+    color: var(--color-text-muted);
+}
+
+
+/* ==========================================================
+   Card Button
+   ========================================================== */
+
+.community-card > .btn {
+    margin:
+        0
+        1.75rem
+        1.75rem;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+.community-card .btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(245,223,178,.35);
+}
+
+
+/* ==========================================================
+   Empty State
+   ========================================================== */
+
+.activity-card {
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    padding: 2rem;
+
+    text-align: center;
+}
+
+.activity-card h3 {
+    margin-bottom: .75rem;
+}
+
+.activity-card p {
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+
+/* ==========================================================
+   Responsive
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+    .dashboard {
+        padding: 1rem;
+    }
+
+    .dashboard-hero {
+        padding: 2rem;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 2rem;
+    }
+
+    .community-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .community-card {
+        min-height: 400px;
+    }
+
+    .community-card-thumb {
+        height: 180px;
+    }
 }

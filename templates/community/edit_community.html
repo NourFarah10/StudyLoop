@@ -166,33 +166,36 @@
                 </div>
 
                 <!-- ===========================
-                     Cover Image
+                    Cover Image
                 ============================ -->
-
                 <div class="form-group">
 
-                    <label
-                        for="cover_image"
-                        class="form-label">
-
+                    <label for="cover_image" class="form-label">
                         Cover Image
-
                     </label>
 
+                    <!-- Current / Old Cover Image -->
                     {% if community['cover_image'] %}
-                        <img
-                            id="cover-preview"
-                            src="{{ url_for('static', filename='uploads/' ~ community['cover_image']) }}"
-                            alt="Current cover image"
-                            class="current-cover-preview">
+                        <div class="current-cover-wrapper">
+                            <p class="current-cover-label">
+                                Current Cover Image
+                            </p>
+
+                            <img
+                                id="cover-preview"
+                                src="{{ url_for('static', filename='uploads/' ~ community['cover_image']) }}"
+                                alt="Current community cover"
+                                class="current-cover-preview">
+                        </div>
                     {% else %}
                         <img
                             id="cover-preview"
                             class="current-cover-preview"
-                            style="display:none;"
+                            style="display: none;"
                             alt="Cover image preview">
                     {% endif %}
 
+                    <!-- Upload New Image -->
                     <div class="upload-box">
 
                         <label for="cover_image" class="file-choose-btn">
@@ -211,7 +214,6 @@
                             hidden>
 
                         <p class="upload-text">
-
                             📷
                             <br><br>
 
@@ -220,12 +222,12 @@
                             {% else %}
                                 Upload a cover image
                             {% endif %}
+
                             <br>
 
                             <small>
                                 JPG, PNG or WebP (Max 5MB)
                             </small>
-
                         </p>
 
                     </div>
@@ -269,28 +271,26 @@
 const description = document.getElementById("description");
 const counter = document.getElementById("description-counter");
 
-description.addEventListener("input", function(){
-
-    counter.textContent =
-        `${this.value.length} / 1000`;
-
+description.addEventListener("input", function () {
+    counter.textContent = `${this.value.length} / 1000`;
 });
+
 
 const coverInput = document.getElementById("cover_image");
 const coverPreview = document.getElementById("cover-preview");
 const coverFilename = document.getElementById("cover-filename");
 
-coverInput.addEventListener("change", function(){
+coverInput.addEventListener("change", function () {
 
-    if(this.files && this.files[0]){
+    if (this.files && this.files[0]) {
 
         coverPreview.src = URL.createObjectURL(this.files[0]);
         coverPreview.style.display = "block";
+
         coverFilename.textContent = this.files[0].name;
 
     } else {
 
-        coverPreview.style.display = "none";
         coverFilename.textContent = "No file chosen";
 
     }

@@ -99,7 +99,30 @@ def inject_current_user():
 
 @app.route("/")
 def landing():
-    return render_template("landing/landing.html")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            c.*,
+            COUNT(cm.user_id) AS member_count
+        FROM communities c
+        LEFT JOIN community_members cm
+            ON cm.community_id = c.id
+        GROUP BY c.id
+        ORDER BY member_count DESC
+        LIMIT 3
+    """)
+
+    communities = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "landing/landing.html",
+        communities=communities
+    )
 
 # ==================================
 # Error Handlers

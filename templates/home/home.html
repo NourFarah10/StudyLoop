@@ -56,7 +56,7 @@
             {{ greeting }}, {{ user["username"] }}!
         </h1>
 
-        <p>
+        <p id="hero-message">
             Pick up where you left off, discover new communities,
             and keep learning every day.
         </p>
@@ -82,6 +82,18 @@
                 {% for community in joined_communities %}
 
                     <div class="community-card">
+
+                        {% if community["cover_image"] %}
+                            <img
+                                src="{{ url_for('static', filename='uploads/' ~ community['cover_image']) }}"
+                                class="community-card-thumb"
+                                alt="{{ community['name'] }}">
+                        {% else %}
+                            <img
+                                src="{{ url_for('static', filename='images/default_community.png') }}"
+                                class="community-card-thumb"
+                                alt="Community Cover">
+                        {% endif %}
 
                         <div>
 
@@ -146,6 +158,18 @@
 
                     <div class="community-card">
 
+                        {% if community["cover_image"] %}
+                            <img
+                                src="{{ url_for('static', filename='uploads/' ~ community['cover_image']) }}"
+                                class="community-card-thumb"
+                                alt="{{ community['name'] }}">
+                        {% else %}
+                            <img
+                                src="{{ url_for('static', filename='images/default_community.png') }}"
+                                class="community-card-thumb"
+                                alt="Community Cover">
+                        {% endif %}
+
                         <div>
 
                             <h3>{{ community["name"] }}</h3>
@@ -189,6 +213,10 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
+    // ==============================
+    // Dynamic Greeting
+    // ==============================
+
     const hour = new Date().getHours();
 
     let greeting = "";
@@ -203,6 +231,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("greeting").textContent =
         `${greeting}, {{ user["username"] }}!`;
+
+
+    // ==============================
+    // Dynamic Motivational Message
+    // ==============================
+
+    const messages = [
+        "Pick up where you left off, discover new communities, and keep learning every day.",
+
+        "Keep learning, keep growing, and connect with students who share your interests.",
+
+        "Your next learning journey is waiting. Explore a community and get started.",
+
+        "Learn together, share your knowledge, and make progress every day.",
+
+        "Discover new communities, share your ideas, and learn something new today.",
+
+        "Every step forward is progress. Keep learning and stay connected.",
+
+        "Find your community, exchange ideas, and make learning more enjoyable.",
+
+        "There's always something new to learn. Continue your journey with StudyLoop."
+    ];
+
+
+    // Get the previous message index
+    const previousIndex = sessionStorage.getItem("studyloopMessageIndex");
+
+    let randomIndex;
+
+    // Make sure we don't select the same message twice
+    do {
+        randomIndex = Math.floor(Math.random() * messages.length);
+    } while (
+        messages.length > 1 &&
+        randomIndex == previousIndex
+    );
+
+
+    // Save the new index
+    sessionStorage.setItem(
+        "studyloopMessageIndex",
+        randomIndex
+    );
+
+
+    // Display the message
+    document.getElementById("hero-message").textContent =
+        messages[randomIndex];
 
 });
 </script>

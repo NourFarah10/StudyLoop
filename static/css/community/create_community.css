@@ -243,3 +243,27 @@
 .create-community-page .upload-box{
     border-color:rgba(255,255,255,.18);
 }
+/* ========================================
+   CURRENT COVER IMAGE
+======================================== */
+
+.current-cover-wrapper {
+    margin-bottom: 20px;
+}
+
+.current-cover-label {
+    margin-bottom: 10px;
+    font-size: .9rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.current-cover-preview {
+    display: block;
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
+}

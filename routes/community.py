@@ -331,6 +331,7 @@ def create_community():
     community_name = request.form.get("community_name", "").strip()
     description = request.form.get("description", "").strip()
     category = request.form.get("category")
+    cover_image = request.files.get("cover_image")
 
     if not community_name:
         flash("Community name is required.")
@@ -361,6 +362,22 @@ def create_community():
 
         return redirect(url_for("community.create_community"))
 
+    # Save uploaded cover image, if one was provided
+    filename = None
+
+    if cover_image and cover_image.filename:
+
+        extension = os.path.splitext(cover_image.filename)[1].lower()
+
+        filename = f"{uuid.uuid4().hex}{extension}"
+
+        upload_path = os.path.join(
+            current_app.config["UPLOAD_FOLDER"],
+            filename
+        )
+
+        cover_image.save(upload_path)
+
     cursor.execute("""
         INSERT INTO communities
         (
@@ -374,7 +391,7 @@ def create_community():
     """, (
         community_name,
         description,
-        None,
+        filename,
         category,
         session["user_id"]
     ))
@@ -404,10 +421,6 @@ def create_community():
             community_id=community_id
         )
     )
-
-# ==========================================================
-# EDIT COMMUNITY
-# ==========================================================
 
 # ==========================================================
 # EDIT COMMUNITY
@@ -542,6 +555,160 @@ def edit_community(community_id):
                 community_id=community_id
             )
         )
+
+    # =====================================================
+    # SHOW EDIT PAGE
+    # =====================================================
+
+    conn.close()
+
+    return render_template(
+        "community/edit_community.html",
+        community=community
+    )
+
+
+# ==========================================================
+# DELETE COMMUNITY
+# ==========================================================
+
+@community_bp.route("/delete-community/<int:community_id>", methods=["POST"])
+@login_required
+def delete_community(community_id):
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Get community
+    cursor.execute("""
+        SELECT *
+        FROM communities
+        WHERE id = ?
+    """, (community_id,))
+
+    community = cursor.fetchone()
+
+    if community is None:
+        conn.close()
+        flash("Community not found.")
+        return redirect(url_for("community.communities"))
+
+    # Only creator can delete
+    if community["created_by"] != session["user_id"]:
+        conn.close()
+        flash("You don't have permission to delete this community.")
+        return redirect(
+            url_for(
+                "community.community",
+                community_id=community_id
+            )
+        )
+
+    # --------------------------
+    # Collect post media files to remove from disk
+    # --------------------------
+
+    cursor.execute("""
+        SELECT file_path
+        FROM post_media
+        WHERE post_id IN (
+            SELECT id
+            FROM posts
+            WHERE community_id = ?
+        )
+    """, (community_id,))
+
+    media_files = [row["file_path"] for row in cursor.fetchall()]
+
+    # --------------------------
+    # Delete dependent rows (children first)
+    # --------------------------
+
+    cursor.execute("""
+        DELETE FROM comment_reactions
+        WHERE comment_id IN (
+            SELECT id
+            FROM comments
+            WHERE post_id IN (
+                SELECT id
+                FROM posts
+                WHERE community_id = ?
+            )
+        )
+    """, (community_id,))
+
+    cursor.execute("""
+        DELETE FROM comments
+        WHERE post_id IN (
+            SELECT id
+            FROM posts
+            WHERE community_id = ?
+        )
+    """, (community_id,))
+
+    cursor.execute("""
+        DELETE FROM post_reactions
+        WHERE post_id IN (
+            SELECT id
+            FROM posts
+            WHERE community_id = ?
+        )
+    """, (community_id,))
+
+    cursor.execute("""
+        DELETE FROM post_media
+        WHERE post_id IN (
+            SELECT id
+            FROM posts
+            WHERE community_id = ?
+        )
+    """, (community_id,))
+
+    cursor.execute("""
+        DELETE FROM posts
+        WHERE community_id = ?
+    """, (community_id,))
+
+    cursor.execute("""
+        DELETE FROM community_members
+        WHERE community_id = ?
+    """, (community_id,))
+
+    cursor.execute("""
+        DELETE FROM communities
+        WHERE id = ?
+    """, (community_id,))
+
+    conn.commit()
+    conn.close()
+
+    # --------------------------
+    # Clean up files from disk
+    # --------------------------
+
+    for file_path in media_files:
+
+        full_path = os.path.join(
+            current_app.config["UPLOAD_FOLDER"],
+            file_path
+        )
+
+        if os.path.exists(full_path):
+            os.remove(full_path)
+
+    if community["cover_image"]:
+
+        cover_path = os.path.join(
+            current_app.config["UPLOAD_FOLDER"],
+            community["cover_image"]
+        )
+
+        if os.path.exists(cover_path):
+            os.remove(cover_path)
+
+    flash("Community deleted successfully.")
+
+    return redirect(url_for("community.communities"))
 
     # =====================================================
     # SHOW EDIT PAGE

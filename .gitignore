@@ -23,7 +23,7 @@ __pycache__/
 # Logs
 *.log
 
-.env
-__pycache__/
+# User uploaded files
+static/uploads/
+
 *.pyc
-venv/

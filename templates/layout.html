@@ -18,10 +18,6 @@
         href="{{ url_for('static', filename='css/styles.css') }}">
 
     {% block css %}{% endblock %}
-    <!-- Favicon -->
-    <link rel="icon"
-        type="image/png"
-        href="{{ url_for('static', filename='images/logo.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,10 +93,14 @@
                 <div class="dropdown ms-auto">
 
                     <img
-                        src="{{ url_for('static',
+                        src="{{ url_for(
+                            'static',
                             filename='uploads/' ~ current_user['profile_image']
-                            if current_user and current_user['profile_image'] != 'default-profile.jpg'
-                            else 'images/default-profile.jpg') }}"
+                            if current_user
+                            and current_user['profile_image']
+                            and current_user['profile_image'] != 'default-profile.jpg'
+                            else 'images/default-profile.jpg'
+                        ) }}"
                         class="profile-avatar dropdown-toggle"
                         data-bs-toggle="dropdown"
                         alt="Profile">
@@ -109,12 +109,15 @@
 
                         <li class="dropdown-header-profile">
                             <img
-                                src="{{ url_for('static',
+                                src="{{ url_for(
+                                    'static',
                                     filename='uploads/' ~ current_user['profile_image']
-                                    if current_user and current_user['profile_image'] != 'default-profile.jpg'
-                                    else 'images/default-profile.jpg') }}"
-                                class="profile-avatar dropdown-toggle"
-                                data-bs-toggle="dropdown"
+                                    if current_user
+                                    and current_user['profile_image']
+                                    and current_user['profile_image'] != 'default-profile.jpg'
+                                    else 'images/default-profile.jpg'
+                                ) }}"
+                                class="profile-avatar"
                                 alt="Profile">
                             <span class="dropdown-username">{{ current_user['username'] }}</span>
                         </li>

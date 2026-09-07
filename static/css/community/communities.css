@@ -1,8 +1,9 @@
 /* ==========================================================================
    Communities (Explore) Page
-   Note: .community-card here has a different internal structure than the
-   one used on landing/home (cover image + separate body), so every rule
-   is scoped under .communities-list to avoid colliding with those pages.
+   Card styling mirrors home.css's .community-card exactly — same glass
+   background, hover shine, and button treatment — just remapped to this
+   page's markup (.community-card-cover / .community-card-body instead of
+   .community-card-thumb / bare > div).
 ========================================================================== */
 
 .communities-header{
@@ -47,87 +48,6 @@
   max-width: 480px;
   margin-inline: auto;
 }
-
-.communities-list {
-  padding-bottom: var(--space-10);
-}
-
-/* Card shell: full-bleed cover on top, padded body below */
-.communities-list .community-card{
-    display:flex;
-    flex-direction:column;
-    padding:0;
-    overflow:hidden;
-    background:var(--color-surface);
-    border:1px solid var(--color-border);
-    border-radius:var(--radius-md);
-    transition:
-        transform .3s ease,
-        box-shadow .3s ease,
-        border-color .3s ease;
-    opacity:0;
-    animation:cardFade .7s forwards;
-}
-.communities-list .community-card:nth-child(1){
-    animation-delay:.1s;
-}
-
-.communities-list .community-card:nth-child(2){
-    animation-delay:.2s;
-}
-
-.communities-list .community-card:nth-child(3){
-    animation-delay:.3s;
-}
-
-.communities-list .community-card:nth-child(4){
-    animation-delay:.4s;
-}
-
-.communities-list .community-card:nth-child(5){
-    animation-delay:.5s;
-}
-
-.communities-list .community-card:nth-child(6){
-    animation-delay:.6s;
-}
-
-@keyframes cardFade{
-    from{
-        opacity:0;
-        transform:translateY(35px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-.communities-list .community-card:hover{
-    transform:
-        translateY(-8px)
-        scale(1.02);
-    border-color:var(--color-accent);
-    box-shadow:
-        0 20px 45px rgba(0,0,0,.28);
-}
-
-.communities-list .community-card-cover {
-  width: 100%;
-  height: 170px;
-  object-fit: cover;
-  display: block;
-}
-
-.communities-list .community-card .btn{
-    transition:
-        transform .25s,
-        box-shadow .25s;
-}
-
-.communities-list .community-card .btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(245,223,178,.25);
-}
 .communities-header h1::after{
     content:"";
     display:block;
@@ -137,44 +57,252 @@
     background:var(--color-accent);
     border-radius:999px;
 }
-.communities-list .community-card-cover{
-    transition:transform .4s ease;
-}
-.communities-list .community-card:hover
-.community-card-cover{
-    transform:scale(1.05);
-}
-.communities-list .community-card-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: var(--space-5);
-}
-.communities-list .community-card-body h3 {
-  font-size: var(--fs-h3);
-  margin-bottom: var(--space-2);
-}
-.communities-list .community-card-body p {
-  font-size: var(--fs-small);
-  color: var(--color-text-secondary);
-  flex: 1;
-}
-.communities-list .community-card-body .btn {
-  margin-top: var(--space-4);
-  align-self: flex-start;
+
+.communities-list {
+  padding-bottom: var(--space-10);
 }
 
-/* Category badge — override Bootstrap's default gray.
-   Uses --color-accent-contrast (not --color-accent) for the text, since
-   pale cream text on a near-white pill background was unreadable in
-   light mode. */
+/* ==========================================================
+   Community Card — matches home.css exactly
+   ========================================================== */
+
+.communities-list .community-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 420px;
+
+    padding: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.03),
+            rgba(255,255,255,.01)
+        );
+
+    backdrop-filter: blur(10px);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    overflow: hidden;
+
+    opacity: 0;
+
+    animation: cardFade .7s forwards;
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+}
+
+/* Light Theme */
+
+[data-theme="light"] .communities-list .community-card {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(20,18,12,.035),
+            rgba(20,18,12,.01)
+        );
+
+    border-color: var(--color-border-strong);
+}
+
+/* Card Animation Delays */
+
+.communities-list .community-card:nth-child(1) {
+    animation-delay: .1s;
+}
+
+.communities-list .community-card:nth-child(2) {
+    animation-delay: .25s;
+}
+
+.communities-list .community-card:nth-child(3) {
+    animation-delay: .4s;
+}
+
+.communities-list .community-card:nth-child(4) {
+    animation-delay: .55s;
+}
+
+.communities-list .community-card:nth-child(5) {
+    animation-delay: .7s;
+}
+
+.communities-list .community-card:nth-child(6) {
+    animation-delay: .85s;
+}
+
+/* Card Entrance Animation */
+
+@keyframes cardFade {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card Hover */
+
+.communities-list .community-card:hover {
+    transform: translateY(-8px) scale(1.02);
+
+    border-color: var(--color-accent);
+
+    box-shadow:
+        0 25px 50px rgba(0,0,0,.35);
+}
+
+/* Hover Sliding Shine */
+
+.communities-list .community-card::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 60%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-accent),
+        transparent
+    );
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 10;
+
+    transition: none;
+}
+
+.communities-list .community-card:hover::before {
+    opacity: 1;
+
+    animation: cardShine 1s ease forwards;
+}
+
+@keyframes cardShine {
+    from {
+        left: -60%;
+    }
+
+    to {
+        left: 120%;
+    }
+}
+
+/* ==========================================================
+   Community Cover Image
+   ========================================================== */
+
+.communities-list .community-card-cover {
+    display: block;
+
+    width: 100%;
+    height: 190px;
+
+    object-fit: cover;
+
+    margin: 0;
+
+    border-radius:
+        var(--radius-lg)
+        var(--radius-lg)
+        0
+        0;
+
+    transition:
+        transform .4s ease,
+        filter .4s ease;
+}
+
+.communities-list .community-card:hover .community-card-cover {
+    transform: scale(1.04);
+    filter: brightness(1.05);
+}
+
+/* ==========================================================
+   Card Body
+   ========================================================== */
+
+.communities-list .community-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    padding: 1.5rem 1.75rem .75rem;
+
+    background: transparent;
+}
+
+.communities-list .community-card-body h3 {
+    font-size: var(--fs-h3);
+    margin-bottom: .5rem;
+    color: var(--color-text-primary);
+}
+
+.communities-list .community-card-body p {
+    font-size: var(--fs-small);
+    color: var(--color-text-muted);
+    flex: 1;
+}
+
+/* ==========================================================
+   Card Button
+   ========================================================== */
+
+.communities-list .community-card-body .btn {
+    margin: 0 0 1.75rem;
+    align-self: flex-start;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+.communities-list .community-card-body .btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(245,223,178,.35);
+}
+
+/* Category badge — small inline pill */
+
 .communities-list .badge.bg-secondary {
-  background: var(--color-accent-soft) !important;
-  color: var(--color-accent-contrast) !important;
-  font-weight: 600;
-  font-size: 0.75rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    width: auto;
+
+    background: var(--color-night-600) !important;
+    color: var(--color-text-secondary) !important;
+
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.65rem;
+
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-2);
 }
 
 /* Empty state */

@@ -79,13 +79,16 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--space-6);
 }
+
+/* Card container — no padding here so the image can sit flush against the edges */
 .community-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: var(--space-5);
   transition: transform var(--transition-base), border-color var(--transition-base),
     box-shadow var(--transition-base);
 }
@@ -98,6 +101,7 @@
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--transition-base);
+  z-index: 2;
 }
 .community-card:hover {
   transform: translateY(-6px);
@@ -108,18 +112,46 @@
 }
 .community-card:hover::before { transform: scaleX(1); }
 
+/* Image stays full-bleed, flush with the card's top/left/right edges */
 .community-image {
   width: 100%;
-  height: 160px;
+  height: 200px;
   object-fit: cover;
-  border-radius: var(--radius-sm);
-  margin-bottom: var(--space-4);
+  display: block;
 }
-.community-card h3 { font-size: var(--fs-h3); margin-bottom: var(--space-2); }
-.community-card p { font-size: var(--fs-small); margin-bottom: var(--space-3); }
+
+/* Text content block — padded on its own, independent of the image */
+.community-card h3,
+.community-card p,
+.community-card .member-badge,
+.community-card .mt-3 {
+  padding-inline: var(--space-5);
+}
+
+.community-card h3 {
+  font-size: var(--fs-h3);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+
+.community-card p {
+  font-size: var(--fs-small);
+  margin-bottom: var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+.community-card .member-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-inline-start: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.community-card .mt-3 {
+  padding-bottom: var(--space-5);
+}
 
 .member-badge {
-  display: inline-flex;
   align-items: center;
   padding: 0.2rem 0.65rem;
   border-radius: var(--radius-pill);

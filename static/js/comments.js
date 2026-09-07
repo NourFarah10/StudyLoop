@@ -174,7 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         <button
                             class="comment-like-btn"
-                            data-comment="${comment.id}">
+                            data-comment="${comment.id}"
+                            data-reaction="${comment.user_reaction || ''}">
 
                             <span class="reaction-icon">
                                 ${
@@ -184,7 +185,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                     comment.user_reaction === "WOW" ? "😮" :
                                     comment.user_reaction === "SAD" ? "😢" :
                                     comment.user_reaction === "ANGRY" ? "😡" :
-                                    "👍"
+                                    comment.user_reaction === "LIKE" ? "👍" :
+                                    ""
                                 }
                             </span>
 
@@ -866,7 +868,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================
-    // Comment Reactions
+    // Comment Reactions (picker emoji clicked)
     // =========================================
 
     document.addEventListener("click", async function (e) {
@@ -901,10 +903,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
         button.dataset.reaction = data.reaction || "";
 
-        button.querySelector(".reaction-icon").textContent = data.icon;
+        button.querySelector(".reaction-icon").textContent = data.reaction ? data.icon : "";
         button.querySelector(".reaction-text").textContent = data.text;
 
-        wrapper.parentElement.querySelector(".comment-reaction-count").innerHTML =
+        wrapper.closest(".comment-body").querySelector(".comment-reaction-count").innerHTML =
+            buildCommentReactionSummary(data);
+
+    });
+
+    // =========================================
+    // Click Like Button Directly (toggle current reaction)
+    // =========================================
+
+    document.addEventListener("click", async function (e) {
+
+        // Ignore clicks that are actually on a picker emoji —
+        // that's handled by the listener above.
+        if (e.target.closest(".comment-reaction"))
+            return;
+
+        const button = e.target.closest(".comment-like-btn");
+
+        if (!button)
+            return;
+
+        const commentId = button.dataset.comment;
+
+        // If the user already has a reaction, sending that same
+        // reaction again tells the backend to remove it (toggle off).
+        // If not, default to LIKE.
+        const reactionToSend = button.dataset.reaction || "LIKE";
+
+        const response = await fetch(
+            `/api/comments/${commentId}/reaction`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    reaction: reactionToSend
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!data.success)
+            return;
+
+        const wrapper = button.closest(".comment-reaction-wrapper");
+
+        button.dataset.reaction = data.reaction || "";
+
+        button.querySelector(".reaction-icon").textContent = data.reaction ? data.icon : "";
+        button.querySelector(".reaction-text").textContent = data.text;
+
+        wrapper.closest(".comment-body").querySelector(".comment-reaction-count").innerHTML =
             buildCommentReactionSummary(data);
 
     });
